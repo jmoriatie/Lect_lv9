@@ -45,6 +45,10 @@ public class Player {
 		this.money -= howMuch;
 	}
 
+	// inventory size
+	public int sizeOfInventory() {
+		return this.inventory.size();
+	}
 //	public void setMoney(int money) {
 //	this.money = money;
 //}

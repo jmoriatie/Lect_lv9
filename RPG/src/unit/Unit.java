@@ -13,7 +13,9 @@ public class Unit {
 	private int def;
 	private int hp;
 	
-	Item item;
+	private Item weapon;
+	private Item armor;
+	private Item accessory;
 	
 	public Unit(String name) {
 		super();
@@ -23,7 +25,9 @@ public class Unit {
 		this.str = 10;
 		this.def = 0;
 		this.hp = 100;
-		this.item = null;
+		this.weapon = null;
+		this.armor = null;
+		this.accessory = null;
 	}
 
 	public String getName() {
@@ -70,13 +74,27 @@ public class Unit {
 		this.hp = hp;
 	}
 
-	public Item getItem() {
-		return this.item;
+	public Item getWeapon() {
+		return weapon;
 	}
-	
-	public void setItem(Item item) {
-		this.item = item;
+
+	public void setWeapon(Item weapon) {
+		this.weapon = weapon;
 	}
-	
-	
+
+	public Item getArmor() {
+		return armor;
+	}
+
+	public void setArmor(Item armor) {
+		this.armor = armor;
+	}
+
+	public Item getAccessory() {
+		return accessory;
+	}
+
+	public void setAccessory(Item accessory) {
+		this.accessory = accessory;
+	}
 }

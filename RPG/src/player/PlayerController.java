@@ -2,6 +2,7 @@ package player;
 
 import main.Main;
 import shop.Item;
+import unit.GuildController;
 
 public class PlayerController {
 
@@ -36,12 +37,15 @@ public class PlayerController {
 			System.out.print("착용자 번호 선택: ");
 			int selUnit = selectInt( Main.sc.next() ); 
 			// 길드원 정보 띄우기
-			if(selUnit >= 0 && selUnit < player.inventory.size()) {
+			if(selUnit >= 0 && selUnit < GuildController.instance.sizeOfGuild()) {
 				System.out.print("착용할 아이템 선택: ");
-				int selItem = selectInt( Main.sc.next() ); 				
-			}
+				int selItem = selectInt( Main.sc.next() ); 
+				if(selItem >= 0 && selItem <player.sizeOfInventory()) {
+					
+				} else System.out.println("[아이템 번호를 확인하세요]");
+			} else System.out.println("[길드 인덱스를 확인하세요]");
 			
-		} else System.out.println("인벤토리가 비었습니다");
+		} else System.out.println("[인벤토리가 비었습니다]");
 		
 		return check;
 	}
