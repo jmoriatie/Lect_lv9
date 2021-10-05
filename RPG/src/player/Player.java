@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import shop.Item;
 
 public class Player {
-	// 플레이어 log기능, 돈 (player) 포함:  Inventory-Item
+	// 플레이어 이름(식별), 돈 (player) 포함:  Inventory-Item
 	private String playerName; // log기능으로 진행
 	private int money;
 	private ArrayList<Item> inventory;
