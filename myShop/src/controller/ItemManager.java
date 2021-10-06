@@ -10,7 +10,7 @@ public class ItemManager {
 	ArrayList<String> category; 
 	ArrayList<Item> itemList;
 	ArrayList<Cart> cart;
-	ArrayList<Cart> payAll;
+	ArrayList<Cart> payed;
 
 	public static ItemManager instance = new ItemManager();
 	
@@ -20,6 +20,7 @@ public class ItemManager {
 		category = new ArrayList<String>();
 		itemList = new ArrayList<Item>(); // item 정보(이름, 가격, 카테고리)
 		cart = new ArrayList<Cart>(); // userId, item 
+		payed = new ArrayList<Cart>();
 		init(); // 실행용
 	}
 	
@@ -219,8 +220,6 @@ public class ItemManager {
 					System.out.printf("[%s]\t%d원(%d원 * %d개) (%s)\n", tempItem[i].getItemName(), (tempItem[i].getPrice() * tempCnt),tempItem[i].getPrice(), tempCnt, tempItem[i].getCategory()); 
 					tempPoint[n++] = tempItem[i]; // 넣어준다
 				}
-				
-				
 			}
 
 			System.out.println("---------------------"); 
@@ -245,21 +244,23 @@ public class ItemManager {
 		
 	}
 
-	// 특정 유저 카트 초기화 ////////////////////////////////이닛하면서, 구매된 목록으로 이동
-	private void initCart(String logId) {	
+	// 특정 유저 카트 초기화
+	private void initCart(String logId) {
+		
 		for(Cart c : cart) {
 			if(c.getUserId().equals(logId)) {
-				payAll.add(c);
-				cart.remove(c);
+				payed.add(c);
 			}
 		}
-		
-		
-//		for(int i=0; i<cart.size(); i++) {
-//			if(cart.get(i).getUserId().equals(logId)) {
-//				cart.remove(i);
-//			}
-//		}
+		while(true) {
+			for(int i=0; i<cart.size(); i++) {
+				if(cart.get(i).getUserId().equals(logId)) {				
+					cart.remove(cart.get(i));
+					i--; // 어레이리스트 remove 할 때, 꼭 확인(자동으로 인덱스 앞으로 당겨짐)
+				}
+			}
+			break;
+		}
 	}
 	// 전체 구매
 	public void payAll(String logId) {
@@ -442,10 +443,44 @@ public class ItemManager {
 	// 카트 전체 출력
 	public void printAllCart() {
 		System.out.println("[카트 전체 출력] ");
-		for(Cart c : cart) {
-			System.out.printf("[id: %s] [cat: %s][item: %s, %d원]\n", c.getUserId(),c.getItem().getCategory(), c.getItem().getItemName(), c.getItem().getPrice());
-		}
+		if(!cart.isEmpty()) {
+			for(Cart c : cart) {
+				System.out.printf("[id: %s] [cat: %s][item: %s, %d원]\n", c.getUserId(),c.getItem().getCategory(), c.getItem().getItemName(), c.getItem().getPrice());
+			}
+		} else System.out.println("[카트가 비어있습니다]");
 	}
+	
+	// 지불 완료된 목록 출력
+	public void printPayed() {
+		int sale = 0;
+		System.out.println("[결제 완료목록 출력] ");
+		
+		// 컨트롤 tempPoint에 필요한 만큼을 저장
+		ArrayList<Item> tempPoint = new ArrayList<Item>();
+		for(int i=0; i<payed.size(); i++) {
+			
+			// 같은 아이템이 있으면 참고하지 않음
+			boolean check = true;
+			if(tempPoint.contains(payed.get(i).getItem())) check = false;
+
+			// 다른 아이템이면 저장해주고 갯수 올려주고 출력함
+			if(check) {
+				Item tmpItem = payed.get(i).getItem();
+				int itemCnt = 1; // 아아템 개수
+				for(int j=i+1; j<payed.size(); j++) {
+					if(tmpItem == payed.get(j).getItem()) {
+						itemCnt++;	
+					}
+				}	
+				// 출력
+				System.out.printf("[%s]\t%d원(%d원 * %d개) (%s)\n", tmpItem.getItemName(), (tmpItem.getPrice() * itemCnt),tmpItem.getPrice(), itemCnt, tmpItem.getCategory()); 
+				tempPoint.add(payed.get(i).getItem()); // 중복체크를 위해 넣어준다
+				sale += (tmpItem.getPrice()*itemCnt); // 총 판매액에 더해주고
+			}
+		}
+		System.out.println("========== 총 판매액 : " + sale + "원 ==========" );
+
+	} 
 	
 	// 카트 추가
 	public void addCart() {

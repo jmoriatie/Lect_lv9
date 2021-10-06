@@ -274,8 +274,9 @@ public class Shop {
 	private void MasterCartyMenu() {
 		System.out.println("--- 장바구니 관리 모드 ---");
 		System.out.println("1) 전체 장바구니 출력");
-		System.out.println("2) 장바구니 추가");
-		System.out.println("3) 장바구니 삭제");
+		System.out.println("2) 구매목록 및 전체 매출액 조회");
+		System.out.println("3) 장바구니 추가");
+		System.out.println("4) 장바구니 삭제");
 		System.out.println("0) 뒤로가기");
 		System.out.print(">> ");
 	}
@@ -296,9 +297,12 @@ public class Shop {
 				im.printAllCart();
 			}
 			else if(sel == 2) {
-				im.addCart();
+				im.printPayed();
 			}
 			else if(sel == 3) {
+				im.addCart();
+			}
+			else if(sel == 4) {
 				im.deleteCart();
 			}
 			else if(sel == 0) {
