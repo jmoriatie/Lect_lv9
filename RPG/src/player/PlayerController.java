@@ -49,6 +49,25 @@ public class PlayerController {
 		
 		return check;
 	}
+	
+	// 인벤토리에 아이템 추가 - 구입한 아이템 저장
+	public void setInventory(Item item) {
+		p1.getInventory().add(item);
+	}
+	// 인벤토리 아이템 삭제(아이템)
+	public void removeInventory(String itemName) {
+		for(Item i : p1.getInventory()) {
+			if(i.getName().equals(itemName)) {
+				p1.getInventory().remove(i);
+				break;
+			}
+		}
+	}
+	// 인벤토리 아이템 삭제(인덱스)
+	public void removeInventory(int index) {
+		p1.getInventory().remove(index);
+	}
+	
 	// 아이템 판매
 	public void sellItem() {
 		// 아이템 가격만큼 더해줘
