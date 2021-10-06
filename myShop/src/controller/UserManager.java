@@ -104,4 +104,5 @@ public class UserManager {
 			System.out.printf("[%d원 입금 완료]\n", inMon);
 		}
 	}
+
 }

@@ -107,7 +107,7 @@ public class Shop {
 	// 쇼핑메뉴
 	private void shoppingMenu() {
 		System.out.println("--- 쇼핑 메뉴 ---");
-		System.out.println("내 잔액 : " + um.getUser(logId).getMoney());
+		System.out.println("내 잔액 : " + um.getUser(logId).getMoney()+"원");
 		System.out.println("1) 구입");
 		System.out.println("2) 삭제");
 		System.out.println("3) 내 장바구니");

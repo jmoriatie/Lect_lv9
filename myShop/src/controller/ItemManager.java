@@ -10,7 +10,8 @@ public class ItemManager {
 	ArrayList<String> category; 
 	ArrayList<Item> itemList;
 	ArrayList<Cart> cart;
-	
+	ArrayList<Cart> payAll;
+
 	public static ItemManager instance = new ItemManager();
 	
 	
@@ -169,17 +170,62 @@ public class ItemManager {
 		}
 	}
 	
+	// 카트에 아이템 개수 조회
+	private int countItems(String logId) {
+		int cnt = 0;
+		for(Cart c : cart) {
+			if(c.getUserId().equals(logId)) { 
+				cnt++;
+			}
+		}
+		return cnt;
+	}
+	
 	// 내 카트 조회 
 	public void printMyCart(String logId) {
 		System.out.println("===" + logId + "님 장바구니 ===");
 		if(!CartIsEmty(logId)) {
+
+			// 카운트 및 저장
+			int itemCnt = countItems(logId);
+			Item tempItem[] = new Item[itemCnt];
+			
+			int n = 0;
 			for(Cart c : cart) {
-				if(c.getUserId().equals(logId)) {
-					System.out.printf("[%s] %d원 (%s) \n", c.getItem().getItemName(), c.getItem().getPrice(), c.getItem().getCategory());
+				if(c.getUserId().equals(logId)) { 
+					tempItem[n] = c.getItem();
+					n++;
 				}
 			}
+			// 컨트롤
+			n = 0;
+			Item tempPoint[] = new Item[itemCnt];
+			for(int i=0; i<itemCnt; i++) {
+				
+				boolean check = true;
+				for(int k=0; k<itemCnt; k++) {
+					if(tempPoint[k] == tempItem[i]) {
+						check = false;
+					}
+				}
+				if(check) {
+					int tempCnt = 1;
+					for(int j=i+1; j<itemCnt; j++) {
+						if(tempItem[i] == tempItem[j]) {
+								tempCnt++;
+							}
+					}	
+					// 출력
+					System.out.printf("[%s]\t%d원(%d원 * %d개) (%s)\n", tempItem[i].getItemName(), (tempItem[i].getPrice() * tempCnt),tempItem[i].getPrice(), tempCnt, tempItem[i].getCategory()); 
+					tempPoint[n++] = tempItem[i]; // 넣어준다
+				}
+				
+				
+			}
+
 			System.out.println("---------------------"); 
-			System.out.println("총 비용: " + sumPrice(logId)+"원"); // 총비용 출력
+			System.out.println("총 구매 물품 갯수\t: " + itemCnt + "개"); // 총 구매 아이템 개수 출력
+			System.out.println("총 비용\t\t: " + sumPrice(logId)+"원"); // 총비용 출력
 			System.out.println("---------------------"); 
 			
 		} else System.out.println("[저장된 물품이 없습니다]");
@@ -199,26 +245,35 @@ public class ItemManager {
 		
 	}
 
-	// 특정 유저 카트 초기화
+	// 특정 유저 카트 초기화 ////////////////////////////////이닛하면서, 구매된 목록으로 이동
 	private void initCart(String logId) {	
-		for(int i=0; i<cart.size(); i++) {
-			if(cart.get(i).getUserId().equals(logId)) {
-				cart.remove(i);
+		for(Cart c : cart) {
+			if(c.getUserId().equals(logId)) {
+				payAll.add(c);
+				cart.remove(c);
 			}
 		}
+		
+		
+//		for(int i=0; i<cart.size(); i++) {
+//			if(cart.get(i).getUserId().equals(logId)) {
+//				cart.remove(i);
+//			}
+//		}
 	}
 	// 전체 구매
 	public void payAll(String logId) {
 		if(!CartIsEmty(logId)) {
+			System.out.println("------- 영수증 --------"); 
+			printMyCart(logId);
 			int sum = sumPrice(logId);
-			System.out.println("---------------------"); 
-			System.out.println("총 비용: " + sum +"원"); 
-			System.out.println("---------------------"); 
-			System.out.println(sum);
 			User user = UserManager.instance.getUser(logId);
 			if(user.getMoney() >= sum) {
+				int change = user.getMoney() - sum;
 				user.setMoney(user.getMoney() - sum);
 				initCart(logId);
+				System.out.println("잔액		: " + change + "원");
+				System.out.println("---------------------"); 
 				System.out.println("[결제가 완료되었습니다]");
 			}
 			else {
