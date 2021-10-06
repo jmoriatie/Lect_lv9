@@ -478,7 +478,8 @@ public class ItemManager {
 				sale += (tmpItem.getPrice()*itemCnt); // 총 판매액에 더해주고
 			}
 		}
-		System.out.println("========== 총 판매액 : " + sale + "원 ==========" );
+		if(payed.isEmpty()) System.out.println("[결제된 내역이 없습니다]");
+		else System.out.println("========== 총 판매액 : " + sale + "원 ==========" );
 
 	} 
 	
