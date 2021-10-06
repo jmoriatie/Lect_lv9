@@ -1,5 +1,7 @@
 package unit;
 
+import java.util.Random;
+
 import shop.Item;
 
 public class Unit {
@@ -18,13 +20,13 @@ public class Unit {
 	private Item accessory;
 	
 	public Unit(String name) {
-		super();
+		Random rn = new Random();
 		this.name = name;
 		this.level = 1;
 		this.isParty = false; 
-		this.str = 10;
-		this.def = 0;
-		this.hp = 100;
+		this.str = rn.nextInt(11)+10; // 10 ~ 20
+		this.def = rn.nextInt(11); // 0 ~ 10
+		this.hp = rn.nextInt(51)+100; // 100 ~ 150
 		this.weapon = null;
 		this.armor = null;
 		this.accessory = null;
