@@ -15,7 +15,8 @@ public class Main {
 	
 	public static void mainGame() {
 		while(true) {
-			System.out.println("[1. 유닛관리]");
+			System.out.println("========== RPG GAME ==========");
+			System.out.print("[1. 유닛관리][2. ][3. ][4. 종료]");
 			String input = sc.next();
 			int select = -1;
 			try {
@@ -24,16 +25,16 @@ public class Main {
 				e.printStackTrace();
 			}
 			
-			if(select ==  1) {
+			if(select ==  1) { // 유닛관리
 				gc.unitMenu();
 			}
-			else if(select == 2) {
+			else if(select == 2) { // 상점
 				
 			}
-			else if(select == 3) {
+			else if(select == 3) { // 인벤토리
 				
 			}
-			else if(select == 4) {
+			else if(select == 4) { // 종료
 				break;
 			}
 		}

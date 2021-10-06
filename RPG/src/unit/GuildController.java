@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import main.Main;
+import player.PlayerController;
 
 public class GuildController {
 	public static GuildController instance =  new GuildController();
@@ -25,7 +26,8 @@ public class GuildController {
 	public void unitMenu() {
 		while(true) {
 			System.out.println("========================= 유닛 관리 =========================");
-			System.out.print("[1.길드원 조회][2.길드원 영입][3.길드원 추방][4.파티원조회][5.파티원 추가][6.파티원 삭제][7.뒤로가기] : ");
+			System.out.println("플레이어가 가진 돈: " + PlayerController.instance.getPlayer().getMoney() + "원");
+			System.out.print("[1.길드원 조회][2.길드원 영입][3.길드원 추방]\n[4.파티원조회][5.파티원 추가][6.파티원 삭제][7.뒤로가기] : ");
 			int sel = selectInt( Main.sc.next() ); 
 			if(sel == 1) {
 				printAllGuild();
@@ -49,7 +51,6 @@ public class GuildController {
 				break;
 			}
 		}
-	
 	}
 	
 // ============ 길드 관련 메서드 ======================
@@ -84,6 +85,22 @@ public class GuildController {
 		return this.guild.size();
 	}
 	
+	// 유닛 통합 출력 메서드
+	private void printUnitStatus(Unit u) {
+		System.out.printf("[이름: %s][레벨: %d][파티원: %b]\n",u.getName(), u.getLevel(), u.isParty());
+		// 장신구
+		if(u.getAccessory() == null) System.out.printf("[hp: %d]", u.getHp());
+		else System.out.printf("[hp: %d + %d]", u.getHp(), u.getAccessory().getPower() );
+		
+		// 무기
+		if(u.getWeapon() == null) System.out.printf("[str: %d]", u.getStr());
+		else System.out.printf("[[str: %d + %d]", u.getStr(), u.getWeapon().getPower() );
+		
+		 // 방어구
+		if(u.getArmor() == null) System.out.printf("[def: %d]\n\n", u.getDef());
+		else System.out.printf("[def: %d + %d]\n\\n", u.getDef(), u.getArmor().getPower() );
+	}
+	
 	// print all guild
 	public void printAllGuild() {
 		System.out.println("========= 길드 유닛 ==========");
@@ -92,14 +109,8 @@ public class GuildController {
 		}
 		else {
 			for(Unit u : guild) {
-				// 아이템 파워 통합 출력
-				System.out.printf("[이름: %s][레벨: %d][파티원: %b]\n",u.getName(), u.getLevel(), u.isParty());
-				if(u.getWeapon() == null && u.getArmor() == null && u.getAccessory() == null) { // 아이템 없는 경우
-					System.out.printf("[hp: %d][str: %d][def: %d]\n\n", u.getHp(), u.getStr(),u.getDef());
-				}
-				else {
-					System.out.printf("[hp: %d][str: %d][def: %d]\n\n", (u.getHp()+u.getAccessory().getPower()), (u.getStr()+u.getWeapon().getPower()), (u.getDef()+u.getArmor().getPower()));
-				}
+				System.out.println("#" + guild.indexOf(u));
+				printUnitStatus(u);
 			}
 		}
 	}
@@ -112,18 +123,8 @@ public class GuildController {
 		int selUnit = selectInt( Main.sc.next() ); 
 		if(getGuildUnit(selUnit) != null) {
 			Unit u = getGuildUnit(selUnit);
-			// 아이템 착용 여부 체크 
-			if(u.getWeapon() == null && u.getArmor() == null && u.getAccessory() == null) { // 아이템 없는 경우
-				System.out.printf("[이름: %s][레벨: %d][파티원: %b]\n",u.getName(), u.getLevel(),u.isParty());
-				System.out.printf("[hp: %d][str: %d][def: %d]\n", u.getHp(), u.getStr(), u.getDef());
-				System.out.printf("[weapon: null][armor: null][acc: null]\n\n");
-			}
-			else {
-				System.out.printf("[이름: %s][레벨: %d][파티원: %b]\n",u.getName(), u.getLevel(), u.isParty());
-				System.out.printf("[hp: %d + %d][str: %d + %d][def: %d + %d]\n", u.getHp(),u.getAccessory().getPower(), u.getStr(), u.getWeapon().getPower(), u.getDef(), u.getArmor().getPower());
-				System.out.printf("[weapon: %s][armor: %s][acc: %d]\n\n", u.getWeapon().getName(), u.getArmor().getName(), u.getAccessory().getName());
-			}
-			
+			System.out.println("#" + guild.indexOf(u));
+			printUnitStatus(u);
 		} else System.out.println("[다시 확인 후 선택하세요]");
 	}
 	
@@ -142,12 +143,14 @@ public class GuildController {
 				System.out.printf("[\'유닛 %s이(가) 길드로 영입되었습니다!\']",unit.getName());
 				System.out.printf("ㄴ [이름: %s][레벨: %d]\n",unit.getName(), unit.getLevel());
 				System.out.printf("ㄴ [hp: %d][str: %d][def: %d]\n", unit.getHp(), unit.getStr(), unit.getDef());
+				PlayerController.instance.getPlayer().substractMoney(1000); //  돈 빼기
+				System.out.printf("[길드원 영입비 %d원 차감]\n", 1000);
 				guild.add(unit);
 				pause();
 		} else System.out.println("[더 이상 길드원을 모집할 수 없습니다]");
 	}
 	
-	// 길드원 랜덤 
+	// 길드원 랜덤 추출
 	private Unit randomUnit() {
 		String one[] = {"두", "이", "박", "최", "석"};
 		String two[] = {"랑", "리", "테", "장", "고"};
@@ -160,11 +163,12 @@ public class GuildController {
 	// 길드원 추방
 	public void deleteGuildUnit() {
 		if(!guild.isEmpty()) {
+			printAllGuild();
 			System.out.print("추방할 길드원을 선택하세요: ");
 			int selUnit = selectInt( Main.sc.next() ); 
 			if(selUnit >= 0 && selUnit < guild.size()) {
-				Unit unit = getPartydUnit(selUnit);
-				System.out.printf("[\'유닛 %s이(가) 추방되었습니다!\']",unit.getName());
+				Unit unit = getGuildUnit(selUnit);
+				System.out.printf("[\'유닛 %s이(가) 추방되었습니다!\']", unit.getName());
 				guild.remove(unit);
 				pause();
 			} else System.out.println("[길드원 번호를 확인하세요]");
@@ -177,10 +181,11 @@ public class GuildController {
 		if(party.size() <= MAXPARTY) {
 			if(!guild.isEmpty()) {
 				System.out.print("파티원으로 추가하고자 하는 길드원을 선택하세요: ");
+				printAllGuild();
 				int selUnit = selectInt( Main.sc.next() ); 
 				if(selUnit >= 0 && selUnit < guild.size()) {
 					Unit unit = getGuildUnit(selUnit);
-					System.out.printf("[\'유닛 %s이(가) 파티로 추가되었습니다!\']",unit.getName());
+					System.out.printf("[\'유닛 %s이(가) 파티로 추가되었습니다!\']\n",unit.getName());
 					party.add(unit);
 					guild.remove(unit);
 					pause();
@@ -191,6 +196,7 @@ public class GuildController {
 	
 	public void deletePartyUnit() {
 		if(!party.isEmpty()) {
+			printAllParty();
 			System.out.print("제외할 파티원을 선택하세요: ");
 			int selUnit = selectInt( Main.sc.next() ); 
 			if(selUnit >= 0 && selUnit < party.size()) {
@@ -235,17 +241,13 @@ public class GuildController {
 	// print all party
 	public void printAllParty() {
 		System.out.println("============ 파티 유닛 =============");
-		if(guild.isEmpty()) {
+		if(party.isEmpty()) {
 			System.out.println("[파티원이 없습니다]");
 		}
 		else {
 			for(Unit u : party) {
-				if(u.getWeapon() == null && u.getArmor() == null && u.getAccessory() == null) { // 아이템 없는 경우
-					System.out.printf("[hp: %d][str: %d][def: %d]\n\n", u.getHp(), u.getStr(),u.getDef());
-				} // 예외처리 다시보기 !!!
-				// 아이템 파워 통합 출력
-				System.out.printf("[이름: %s][레벨: %d][파티원: %b]\n",u.getName(), u.getLevel(), u.isParty());
-				System.out.printf("[hp: %d][str: %d][def: %d]\n\n", (u.getHp()+u.getAccessory().getPower()), (u.getStr()+u.getWeapon().getPower()), (u.getDef()+u.getArmor().getPower()));
+				System.out.println("#" + party.indexOf(u));
+				printUnitStatus(u);
 			}
 		}
 	}
