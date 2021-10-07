@@ -79,7 +79,7 @@ public class ShopController {
 	// 디버깅용 아이템 랜덤으로 주는 메서드
 	public Item getFreeItem() {
 		Random rn = new Random();
-		System.out.println("[디버깅용 아이템 추가!]");
+		System.out.print("[get디버깅 아이템]\n");
 		return this.itemList.get( rn.nextInt(itemList.size()) );
 	}
 	

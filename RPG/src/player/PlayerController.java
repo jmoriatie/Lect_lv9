@@ -26,6 +26,7 @@ public class PlayerController {
 	public void InventoryMenu() {
 		while(true) {
 			System.out.println("========== 인벤토리 메뉴 ==========");
+			System.out.println("플레이어가 가진 돈: " + this.getPlayer().getMoney() + "원");
 			System.out.print("[1. 아이템 조회][2. 아이템 착용][3. 아이템 해제]\n[4. 아이템 판매][5. 뒤로가기] : ");	
 			int sel = selectInt(Main.sc.next());
 			if(sel == 1) {
@@ -38,7 +39,7 @@ public class PlayerController {
 				removeItem(p1);
 			}
 			else if(sel == 4) {
-				
+				sellItem(p1);
 			}
 			else if(sel == 5) {
 				break;
@@ -80,14 +81,32 @@ public class PlayerController {
 						if (selItem >= 0 && selItem < player.sizeOfInventory()) { // 아이템 예외
 							// 아이템 착용 부분
 							Item item = player.getInventoryOne(selItem);
-							if(item.getKind() == Item.WEAPON) unit.setWeapon( item );
-							else if(item.getKind() == Item.ARMOR) unit.setArmor( item );
-							else if(item.getKind() == Item.ACCESSORY) unit.setAccessory( item );
+							if(item.getKind() == Item.WEAPON) {
+								if(unit.getWeapon() != null) { // 이미 장비를 착용하고 있다면
+									System.out.printf("[착용 중인\'%s\'은(는) 인벤토리로 이동합니다]\n", unit.getWeapon().getName());
+									player.setInventory( unit.getWeapon() ); // 끼고 있던 장비 인벤토리로 이동
+								}
+								unit.setWeapon( item );
+							}
+							else if(item.getKind() == Item.ARMOR) {
+								if(unit.getArmor() != null) { 
+									System.out.printf("[착용 중인\'%s\'은(는) 인벤토리로 이동합니다]\n", unit.getArmor().getName());
+									player.setInventory( unit.getArmor() ); 
+								}
+								unit.setArmor( item );
+							}
+							else if(item.getKind() == Item.ACCESSORY) {
+								if(unit.getAccessory() != null) { 
+									System.out.printf("[착용 중인\'%s\'은(는) 인벤토리로 이동합니다]\n", unit.getAccessory().getName());
+									player.setInventory( unit.getAccessory() ); 
+								}
+								unit.setAccessory( item );
+							}
 							player.getInventory().remove( item ); // 인벤에선 삭제
-							System.out.printf("[%s]이(가) \'%s\'를 착용했습니다\n", unit.getName(), item.getName());
+							System.out.printf("[[%s]이(가) \'%s\'를 착용했습니다]\n", unit.getName(), item.getName());
 						} else System.out.println("[아이템 번호를 확인하세요]");
 					} else System.out.println("[길드원 인덱스를 확인하세요]");
-				} 
+				} else System.out.println("[길드원이 없습니다]");
 			}
 			else if(sel == 2) {
 				if(GuildController.instance.sizeOfParty() != 0) {
@@ -108,10 +127,8 @@ public class PlayerController {
 							System.out.printf("[%s]이(가) \'%s\'를 착용했습니다\n", unit.getName(), item.getName());
 						} else System.out.println("[아이템 번호를 확인하세요]");
 					} else System.out.println("[파티원 인덱스를 확인하세요]");	
-				} 
+				} else System.out.println("[파티원이 없습니다]");
 			}
-			
-
 		} else System.out.println("[인벤토리가 비었습니다]");
 	}
 
@@ -119,17 +136,24 @@ public class PlayerController {
 	public void removeItem(Player player) {
 		ArrayList<Unit> tmpUnitArr = new ArrayList<Unit> ();
 		int size = GuildController.instance.sizeOfGuild() > GuildController.instance.sizeOfParty()? GuildController.instance.sizeOfGuild():GuildController.instance.sizeOfParty();
-		
+		System.out.println("===== 아이템 해제 =====");
+		// 아이템 낀 유닛 저장
 		for(int i=0; i<size; i++) { 
-			Unit guildUnit =  GuildController.instance.getGuildUnit(i);// 각각의 유닛이 맞다면 => 길드유닛, 파티 유닛
-			Unit partyUnit = GuildController.instance.getPartydUnit(i);
-			if(guildUnit != null && guildUnit.getWeapon() != null || guildUnit.getArmor() != null || guildUnit.getAccessory() != null) {
-				tmpUnitArr.add(guildUnit);
-			}
-			if(partyUnit != null && partyUnit.getWeapon() != null || partyUnit.getArmor() != null || partyUnit.getAccessory() != null) {
-				tmpUnitArr.add(partyUnit);
-			}
+				Unit guildUnit =  GuildController.instance.getGuildUnit(i);// 각각의 유닛이 맞다면 => 길드유닛, 파티 유닛
+				if(guildUnit != null) {
+					if(guildUnit.getWeapon() != null || guildUnit.getArmor() != null || guildUnit.getAccessory() != null) {
+						tmpUnitArr.add(guildUnit);
+					}
+				}
+			
+				Unit partyUnit = GuildController.instance.getPartydUnit(i);
+				if(partyUnit != null) {
+					if(partyUnit != null && partyUnit.getWeapon() != null || partyUnit.getArmor() != null || partyUnit.getAccessory() != null) {
+						tmpUnitArr.add(partyUnit);
+					}
+				}
 		}
+		// 아래부터 별도의 tempArr
 		if(!tmpUnitArr.isEmpty()) {
 			System.out.println("[아이템을 착용중인 유닛]");
 			int n = 1;
@@ -138,15 +162,13 @@ public class PlayerController {
 				if(unit.getWeapon() != null) System.out.printf("[무기: %s(+%d)]",unit.getWeapon().getName(), unit.getWeapon().getPower());
 				if(unit.getArmor() != null) System.out.printf("[방어구: %s(+%d)]",unit.getArmor().getName(), unit.getArmor().getPower()); 
 				if(unit.getAccessory() != null) System.out.printf("[악세서리: %s(+%d)]",unit.getAccessory().getName(), unit.getAccessory().getPower());
-				if(unit.isParty()) System.out.println(" #파티원\n");
+				if(unit.isParty()) System.out.print(" #파티원\n");
 				else System.out.print("\n");
 			}
 			System.out.print("아이템 착용을 해제할 유닛 선택: ");
 			int selUnit = selectInt(Main.sc.next())-1;
 			if(selUnit >= 0 && selUnit < tmpUnitArr.size()) {
 				Unit thisU = tmpUnitArr.get(selUnit);
-				System.out.println("해제할 아이템 선택: ");
-				int selItem = selectInt(Main.sc.next())-1;
 				// 출력
 				if(thisU.getWeapon() != null) System.out.printf("[1. %s]", thisU.getWeapon().getName());
 				else System.out.print("[1. x]");
@@ -154,26 +176,28 @@ public class PlayerController {
 				if(thisU.getArmor() != null) System.out.printf("[2. %s]", thisU.getArmor().getName());
 				else System.out.print("[2. x]");
 				
-				if(thisU.getAccessory() != null) System.out.printf("[3. %s]", thisU.getAccessory().getName());
-				else System.out.print("[3. x]");
+				if(thisU.getAccessory() != null) System.out.printf("[3. %s]\n", thisU.getAccessory().getName());
+				else System.out.print("[3. x]\n");
 
+				System.out.println("해제할 아이템 선택: ");
+				int selItem = selectInt(Main.sc.next());
 				if(selItem == 1) {
 					if(thisU.getWeapon() != null) {
-						System.out.printf("유닛 \'%s\'의 [%s]이(가)해제됐습니다]", thisU.getName(), thisU.getWeapon());
+						System.out.printf("유닛 \'%s\'의 [%s]이(가)해제됐습니다]\n", thisU.getName(), thisU.getWeapon().getName());
 						this.setInventory(thisU.getWeapon());
 						thisU.setWeapon(null);
-					}else System.out.println("[무기를 착용하고 있지 않습니다]");
+					} else System.out.println("[무기를 착용하고 있지 않습니다]");
 				}
 				else if(selItem == 2) {
 					if(thisU.getArmor() != null) {
-						System.out.printf("유닛 \'%s\'의 [%s]이(가)해제됐습니다]", thisU.getName(), thisU.getArmor());
+						System.out.printf("유닛 \'%s\'의 [%s]이(가)해제됐습니다]\n", thisU.getName(), thisU.getArmor().getName());
 						this.setInventory(thisU.getArmor());
 						thisU.setArmor(null);
 					}else System.out.println("[방어구를 착용하고 있지 않습니다]");
 				}
 				else if(selItem == 3) {
 					if(thisU.getAccessory() != null) {
-						System.out.printf("유닛 \'%s\'의 [%s]이(가)해제됐습니다]", thisU.getName(), thisU.getAccessory());
+						System.out.printf("유닛 \'%s\'의 [%s]이(가)해제됐습니다]\n", thisU.getName(), thisU.getAccessory().getName());
 						this.setInventory(thisU.getAccessory());
 						thisU.setAccessory(null);
 					}else System.out.println("[악세서리를 착용하고 있지 않습니다]");
@@ -186,8 +210,20 @@ public class PlayerController {
 	}
 
 	// 아이템 판매
-	public void sellItem() {
+	public void sellItem(Player player) {
 		// 아이템 가격만큼 더해줘
+		System.out.println("===== 아이템 판매 =====");
+		this.printAllInventory(player);
+		
+		System.out.print("판매할 아이템 인덱스 선택: ");
+		int itemIdx = selectInt(Main.sc.next())-1;
+		if(itemIdx >= 0 && itemIdx < this.getPlayer().sizeOfInventory()) {
+			Item sellItem = this.getPlayer().getInventoryOne(itemIdx);
+			if(this.getPlayer().removeItem(sellItem)) {
+				System.out.printf("[\'[%s]\' 아이템이 판매되었습니다]\n", sellItem.getName());
+				this.getPlayer().plusMoney(sellItem.getPrice());
+			} else System.out.println("[판매하지 못했습니다]\n");
+		}
 	}
 	
 //	========== 기본 메서드 ===============

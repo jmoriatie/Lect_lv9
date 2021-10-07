@@ -50,6 +50,26 @@ public class Player {
 		return this.inventory.size();
 	}
 	
+	// 아이템 제거(인덱스)
+	public boolean removeItem(int idx) {
+		boolean check = false;
+		
+		if(this.inventory.remove(idx) != null) {
+			check = true;
+		}
+		return check;
+	}
+	
+	// 아이템 제거(item객체)
+	public boolean removeItem(Item item) {
+		boolean check = false;
+		
+		if(this.inventory.remove(item)) {
+			check = true;
+		}
+		return check;
+	}
+	
 	// 플레이어 돈 체크
 	public boolean checkMoneyPossible(int howMuch) {
 		boolean check = true;
