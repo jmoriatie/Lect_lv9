@@ -105,10 +105,9 @@ public class ShopController {
 			else if(sel == 4) {
 				createItem();
 			}
-			else if(sel == 4) {
+			else if(sel == 5) {
 				break;
 			}
-
 		}
 	}
 

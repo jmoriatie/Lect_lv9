@@ -32,7 +32,7 @@ public class Main {
 				shop.shopMenu();
 			}
 			else if(select == 3) { // 인벤토리
-				
+				pc.InventoryMenu();
 			}
 			else if(select == 4) { // 종료
 				break;

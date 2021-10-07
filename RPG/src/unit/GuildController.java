@@ -207,10 +207,10 @@ public class GuildController {
 				guild.add(unit);
 				party.remove(unit);
 				System.out.printf("[\'[%s]\'이(가) 파티에서 제외되었습니다!, 제외된 유닛은 길드에서 재영입 가능합니다]\n",unit.getName());
-				if(this.guild.size() != 0) { // 삭제 시 autoParty 체크해서 길드에서 자동영입
-					Random rn = new Random(); // 길드원 중 랜덤 유닛 파티에 추가
-					autoPartyAdd( this.guild.get( rn.nextInt(guild.size()) ) );  
-				}
+//				if(this.guild.size() != 0) { // 삭제 시 autoParty 체크해서 길드에서 자동영입
+//					Random rn = new Random(); // 길드원 중 랜덤 유닛 파티에 추가
+//					autoPartyAdd( this.guild.get( rn.nextInt(guild.size()) ) );  
+//				}
 				pause();
 			} else System.out.println("[파티원 번호를 확인하세요]");
 		} else System.out.println("[파티원이 없습니다]");
