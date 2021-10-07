@@ -53,7 +53,7 @@ public class GuildController {
 		while(true) {
 			System.out.println("========================= 유닛 관리 =========================");
 			System.out.println("플레이어가 가진 돈: " + PlayerController.instance.getPlayer().getMoney() + "원");
-			System.out.print("[1.길드원 조회][2.길드원 영입][3.길드원 추방]\n[4.파티원조회][5.파티원 추가][6.파티원 삭제][7.뒤로가기] : ");
+			System.out.print("[1.길드원 조회][2.길드원 영입][3.길드원 추방]\n[4.파티원 조회][5.파티원 추가][6.파티원 제외][7. 파티원 교체][8.뒤로가기] : ");
 			int sel = selectInt( Main.sc.next() ); 
 			if(sel == 1) {
 				printAllGuild();
@@ -72,6 +72,9 @@ public class GuildController {
 			}
 			else if(sel == 6) {
 				deletePartyUnit();
+			}
+			else if(sel == 7) {
+				updatePartyUnit();;
 			}
 			else if(sel == 7) {
 				break;
@@ -219,10 +222,10 @@ public class GuildController {
 // ============ 파티 관련 메서드 ======================
 	// 파티원 셋팅
 	public void addPartyUnit() {
-		if(party.size() <= MAXPARTY) {
+		if(party.size() < MAXPARTY) {
 			if(!guild.isEmpty()) {
-				System.out.print("파티원으로 추가하고자 하는 길드원을 선택하세요: ");
 				printAllGuild();
+				System.out.print("파티원으로 추가하고자 하는 길드원을 선택하세요: ");
 				int selUnit = selectInt( Main.sc.next() ); 
 				if(selUnit >= 0 && selUnit < guild.size()) {
 					Unit unit = getGuildUnit(selUnit);
@@ -238,8 +241,8 @@ public class GuildController {
 	
 	public void deletePartyUnit() {
 		if(!party.isEmpty()) {
-			printAllParty();
-			System.out.print("제외할 파티원을 선택하세요: ");
+			this.printAllParty();
+			System.out.print("삭제할 파티원을 선택하세요: ");
 			int selUnit = selectInt( Main.sc.next() ); 
 			if(selUnit >= 0 && selUnit < party.size()) {
 				Unit unit = getPartydUnit(selUnit);
@@ -251,7 +254,34 @@ public class GuildController {
 			} else System.out.println("[파티원 번호를 확인하세요]");
 		} else System.out.println("[파티원이 없습니다]");
 	}
-		
+	// 교체	
+	public void updatePartyUnit() {
+		if(!this.guild.isEmpty()) {
+			if(!party.isEmpty()) {
+				this.printAllParty();
+				System.out.print("교체할 파티원을 선택하세요: ");
+				int selPIdx = selectInt( Main.sc.next() ); 
+				if(selPIdx >= 0 && selPIdx < party.size()) {
+					this.printAllGuild();
+					System.out.print("파티에 포함할 길드원을 선택하세요: ");
+					int selGIdx = selectInt( Main.sc.next() ); 
+					
+					Unit unitP = getPartydUnit(selPIdx);
+					unitP.setParty(false);
+					guild.add(unitP);
+					party.remove(unitP);
+					
+					Unit unitG = getGuildUnit(selGIdx);
+					unitG.setParty(true);
+					party.add(unitG);
+					guild.remove(unitG);
+					System.out.printf("[\'[%s]\'이(가) 파티에 추가되었습니다(\'[%s]\' 길드로 이동)]\n",unitG.getName(), unitP.getName());
+					pause();
+				} else System.out.println("[파티원 번호를 확인하세요]");
+			} else System.out.println("[파티원이 없습니다]");
+		} else System.out.println("[교체할 유닛이 없습니다, 길드원을 우선 영입하세요]");
+	}
+	
 	// 인덱스 => 파티원
 	public Unit getPartydUnit(int idx) {
 		Unit partyUnit = null;
