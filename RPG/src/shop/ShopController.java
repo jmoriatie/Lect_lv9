@@ -1,6 +1,7 @@
 package shop;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import main.Main;
 import player.PlayerController;
@@ -75,6 +76,13 @@ public class ShopController {
 		itemList.add(temp);
 	}
 	
+	// 디버깅용 아이템 랜덤으로 주는 메서드
+	public Item getFreeItem() {
+		Random rn = new Random();
+		System.out.println("[디버깅용 아이템 추가!]");
+		return this.itemList.get( rn.nextInt(itemList.size()) );
+	}
+	
 	private int selectInt(String input) {
 		int select = -1;
 		try {
@@ -86,12 +94,10 @@ public class ShopController {
 	}
 	
 	public void shopMenu() {
-//		- 아이템 구입 (무기, 갑옷, 반지)
-//		- 아이템 생성
 		while(true) {
 			System.out.println("========================= 상점 =========================");
 			System.out.println("플레이어가 가진 돈: " + PlayerController.instance.getPlayer().getMoney() + "원");
-			System.out.print("[1.아이템 목록][2. 아이템 조회]\n[3.아이템 구입][4.아이템 생성][5.뒤로가기] : ");
+			System.out.print("[1.아이템 목록][2. 아이템 조회]\n[3.아이템 구입][4.뒤로가기] : ");
 			int sel = selectInt( Main.sc.next() ); 
 			if(sel == 1) {
 				printAllItem();
@@ -103,9 +109,6 @@ public class ShopController {
 				buyItem();
 			}
 			else if(sel == 4) {
-				createItem();
-			}
-			else if(sel == 5) {
 				break;
 			}
 		}
@@ -198,21 +201,13 @@ public class ShopController {
 		System.out.print("구매를 원하는 아이템 번호 입력 : ");
 		int selItem = selectInt( Main.sc.next() ) - 1; 
 		if(selItem >= 0 && selItem < itemTemp.length) {
-			PlayerController.instance.getPlayer().setInventory( itemTemp[selItem] ); // 인벤토리로 아이템 이동
-			PlayerController.instance.getPlayer().substractMoney( itemTemp[selItem].getPrice()); //  돈 빼기
+			if(PlayerController.instance.getPlayer().checkMoneyPossible( itemTemp[selItem].getPrice() )) {
+				PlayerController.instance.getPlayer().setInventory( itemTemp[selItem] ); // 인벤토리로 아이템 이동
+				PlayerController.instance.getPlayer().substractMoney( itemTemp[selItem].getPrice()); //  돈 빼기
+				System.out.printf("\'[%s] 구입 완료\'\n", itemTemp[selItem].getName());
+			} else System.out.println("[플레이어의 소지금이 부족합니다]");
 		} else  System.out.println("[잘못된 아이템 인덱스]");	
 	}
-
-//	private void buyItem() {
-////		printAllItem();
-//		System.out.print("구매를 원하는 아이템 번호 입력 : ");
-//		int sel = selectInt( Main.sc.next() ); 
-//		if(sel >= 0 && sel < itemList.size()) {
-//			PlayerController.instance.getPlayer().setInventory(itemList.get(sel)); // 인벤토리로 아이템 이동
-//			PlayerController.instance.getPlayer().substractMoney(itemList.get(sel).getPrice()); //  돈 빼기
-//			System.out.printf("[[%s] 구입 완료]\n", itemList.get(sel).getName());
-//		} else  System.out.println("[잘못된 아이템 인덱스]");
-//	}
 	
 	// 카테고리 입력 => tempItemArr 돌려주기
 	private Item[] makeItemArr(int itemKind) {
@@ -248,14 +243,5 @@ public class ShopController {
 			}
 		}
 		return tempItemArr;
-	}
-	
-
-
-//	Item(int kind, String name, int power, int price)
-	private void createItem() {
-		System.out.println("===== 아이템 생성 =====");
-		
-		
 	}
 }

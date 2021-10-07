@@ -35,6 +35,7 @@ public class Main {
 				pc.InventoryMenu();
 			}
 			else if(select == 4) { // 종료
+				System.out.println("[게임 종료]");
 				break;
 			}
 		}

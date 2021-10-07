@@ -139,7 +139,8 @@ public class GuildController {
 	
 	// 길드원 모집=
 	public void addGuildUnit() {
-		if(guild.size() <= MAXGUILD) {
+		if(PlayerController.instance.getPlayer().checkMoneyPossible(1000)) {
+			if(guild.size() <= MAXGUILD) {
 				Unit unit = randomUnit();
 				System.out.printf("[\'유닛 %s이(가) 길드로 영입되었습니다!\']",unit.getName());
 				System.out.printf("ㄴ [이름: %s][레벨: %d]\n",unit.getName(), unit.getLevel());
@@ -149,8 +150,9 @@ public class GuildController {
 				guild.add(unit);
 				this.autoPartyAdd(unit);
 				pause();
-		} 
-		else System.out.println("[더 이상 길드원을 모집할 수 없습니다]");
+			} 
+			else System.out.println("[더 이상 길드원을 모집할 수 없습니다]");
+		} else System.out.println("[플레이어의 소지금이 부족합니다]");
 	}
 	
 	// 길드원 랜덤 추출
@@ -189,6 +191,7 @@ public class GuildController {
 				if(selUnit >= 0 && selUnit < guild.size()) {
 					Unit unit = getGuildUnit(selUnit);
 					System.out.printf("[\'[%s]\'이(가) 파티로 추가되었습니다!]\n",unit.getName());
+					unit.setParty(true); // 파티 true 바꾸기 -> 전혀 이용 안한듯..
 					party.add(unit);
 					guild.remove(unit);
 					pause();
@@ -204,6 +207,7 @@ public class GuildController {
 			int selUnit = selectInt( Main.sc.next() ); 
 			if(selUnit >= 0 && selUnit < party.size()) {
 				Unit unit = getPartydUnit(selUnit);
+				unit.setParty(false);
 				guild.add(unit);
 				party.remove(unit);
 				System.out.printf("[\'[%s]\'이(가) 파티에서 제외되었습니다!, 제외된 유닛은 길드에서 재영입 가능합니다]\n",unit.getName());
@@ -276,6 +280,7 @@ public class GuildController {
 
 		if(this.autoPartyAdd) {
 			System.out.printf("[\'[%s]\'이(가) 파티로 추가되었습니다!]\n",unit.getName());
+			unit.setParty(true);
 			party.add(unit);
 			guild.remove(unit);
 			

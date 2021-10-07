@@ -49,8 +49,14 @@ public class Player {
 	public int sizeOfInventory() {
 		return this.inventory.size();
 	}
-//	public void setMoney(int money) {
-//	this.money = money;
-//}
+	
+	// 플레이어 돈 체크
+	public boolean checkMoneyPossible(int howMuch) {
+		boolean check = true;
+		if(this.money - howMuch < 0) {
+			check = false;
+		}
+		return check;
+	}
 
 }
