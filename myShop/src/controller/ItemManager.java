@@ -14,7 +14,6 @@ public class ItemManager {
 
 	public static ItemManager instance = new ItemManager();
 	
-	
 	// 카테고리 추가
 	private ItemManager() {
 		category = new ArrayList<String>();

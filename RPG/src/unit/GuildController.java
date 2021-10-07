@@ -10,6 +10,7 @@ public class GuildController {
 	public static GuildController instance =  new GuildController();
 	private final int MAXGUILD = 10;
 	private final int MAXPARTY = 4;
+	private boolean autoPartyAdd = true;
 	private ArrayList<Unit> guild;
 	private ArrayList<Unit> party;
 	
@@ -146,8 +147,10 @@ public class GuildController {
 				PlayerController.instance.getPlayer().substractMoney(1000); //  돈 빼기
 				System.out.printf("[길드원 영입비 %d원 차감]\n", 1000);
 				guild.add(unit);
+				this.autoPartyAdd(unit);
 				pause();
-		} else System.out.println("[더 이상 길드원을 모집할 수 없습니다]");
+		} 
+		else System.out.println("[더 이상 길드원을 모집할 수 없습니다]");
 	}
 	
 	// 길드원 랜덤 추출
@@ -168,7 +171,7 @@ public class GuildController {
 			int selUnit = selectInt( Main.sc.next() ); 
 			if(selUnit >= 0 && selUnit < guild.size()) {
 				Unit unit = getGuildUnit(selUnit);
-				System.out.printf("[\'유닛 %s이(가) 추방되었습니다!\']", unit.getName());
+				System.out.printf("[\'[%s]\'이(가) 추방되었습니다!]\n", unit.getName());
 				guild.remove(unit);
 				pause();
 			} else System.out.println("[길드원 번호를 확인하세요]");
@@ -185,7 +188,7 @@ public class GuildController {
 				int selUnit = selectInt( Main.sc.next() ); 
 				if(selUnit >= 0 && selUnit < guild.size()) {
 					Unit unit = getGuildUnit(selUnit);
-					System.out.printf("[\'유닛 %s이(가) 파티로 추가되었습니다!\']\n",unit.getName());
+					System.out.printf("[\'[%s]\'이(가) 파티로 추가되었습니다!]\n",unit.getName());
 					party.add(unit);
 					guild.remove(unit);
 					pause();
@@ -203,7 +206,11 @@ public class GuildController {
 				Unit unit = getPartydUnit(selUnit);
 				guild.add(unit);
 				party.remove(unit);
-				System.out.printf("[\'유닛 %s이(가) 파티에서 제외되었습니다!\']",unit.getName());
+				System.out.printf("[\'[%s]\'이(가) 파티에서 제외되었습니다!, 제외된 유닛은 길드에서 재영입 가능합니다]\n",unit.getName());
+				if(this.guild.size() != 0) { // 삭제 시 autoParty 체크해서 길드에서 자동영입
+					Random rn = new Random(); // 길드원 중 랜덤 유닛 파티에 추가
+					autoPartyAdd( this.guild.get( rn.nextInt(guild.size()) ) );  
+				}
 				pause();
 			} else System.out.println("[파티원 번호를 확인하세요]");
 		} else System.out.println("[파티원이 없습니다]");
@@ -260,5 +267,18 @@ public class GuildController {
 			e.printStackTrace();
 		}
 		return select;
+	}
+	
+	// 자동 파티 추가
+	private void autoPartyAdd(Unit unit) {
+		if(party.size() >= MAXPARTY) this.autoPartyAdd = false; // 파티 사이즈 같거나 넘으면
+		else this.autoPartyAdd = true; // 그게 아니라면
+
+		if(this.autoPartyAdd) {
+			System.out.printf("[\'[%s]\'이(가) 파티로 추가되었습니다!]\n",unit.getName());
+			party.add(unit);
+			guild.remove(unit);
+			
+		}
 	}
 }

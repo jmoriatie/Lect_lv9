@@ -16,7 +16,7 @@ public class Main {
 	public static void mainGame() {
 		while(true) {
 			System.out.println("========== RPG GAME ==========");
-			System.out.print("[1. 유닛관리][2. 상점][3. 인벤토리][4. 종료]");
+			System.out.print("[1. 유닛관리][2. 상점][3. 인벤토리][4. 종료] : ");
 			String input = sc.next();
 			int select = -1;
 			try {

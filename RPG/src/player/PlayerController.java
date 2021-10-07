@@ -73,12 +73,16 @@ public class PlayerController {
 		// 아이템 가격만큼 더해줘
 	}
 	
-	// 조회 메서드
-	
-	// 프린트하는 메서드 능력 등등등 프린트
-//	public void printInventory() {
-//		for(Item item : inventory) {
-//			System.out.print(item.getName() + " "); 
-//		}
-//	}
+	// 인벤토리 아이템 얻어오기
+	public Item getInventoryItem(String itemName) {
+		Item item = null;
+		
+		for(Item i : p1.getInventory()) {
+			if(i.getName().equals(itemName)) {
+				item = i;
+			}
+		}
+		return item;
+	}
+
 }
