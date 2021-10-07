@@ -182,9 +182,9 @@ public class GuildController {
 	
 	// 길드원 랜덤 추출
 	private Unit randomUnit() {
-		String one[] = {"두", "이", "박", "최", "석"};
-		String two[] = {"랑", "리", "테", "장", "고"};
-		String thr[] = {"고", "듐", "리", "수", "대"};
+		String one[] = {"두", "이", "박", "최", "석", "둠", "댕"};
+		String two[] = {"랑", "리", "테", "장", "고", "가", "댕"};
+		String thr[] = {"고", "듐", "리", "수", "대", "이", "댕"};
 		Random rn = new Random();
 		String ranName = one[rn.nextInt(one.length)] + two[rn.nextInt(two.length)] + thr[rn.nextInt(thr.length)];
 		return new Unit(ranName);
@@ -198,7 +198,7 @@ public class GuildController {
 			int selUnit = selectInt( Main.sc.next() ); 
 			if(selUnit >= 0 && selUnit < guild.size()) {
 				Unit unit = getGuildUnit(selUnit);
-				if(unit.getWeapon() != null|| unit.getArmor() != null || unit.getAccessory() != null) {
+				if(unit.getWeapon() != null|| unit.getArmor() != null || unit.getAccessory() != null) { // 아이템 착용중일 때 알람
 					System.out.print("아이템을 착용중입니다, 추방하시겠습니까?[추방하려면 'y' 입력] : ");
 					String sel = Main.sc.next();
 					if("y".equals(sel)) {
@@ -206,6 +206,11 @@ public class GuildController {
 						pause();
 						System.out.printf("[\'[%s]\'이(가) 추방되었습니다!]\n", unit.getName());
 					}
+				}
+				else { // 아이템 없을 때 알림 없이 추방
+					guild.remove(unit);
+					pause();
+					System.out.printf("[\'[%s]\'이(가) 추방되었습니다!]\n", unit.getName());
 				}
 			} else System.out.println("[길드원 번호를 확인하세요]");
 		} else System.out.println("[모집된 길드원이 없습니다]");
