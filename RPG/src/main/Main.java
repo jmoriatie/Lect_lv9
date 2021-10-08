@@ -36,10 +36,10 @@ public class Main {
 				pc.InventoryMenu();
 			}
 			else if(select == 4) { // 저장
-
+				fc.save();
 			}
 			else if(select == 5) { // 불러오기
-
+				fc.load();
 			}
 			else if(select == 6) { // 종료
 				System.out.println("[게임 종료]");
