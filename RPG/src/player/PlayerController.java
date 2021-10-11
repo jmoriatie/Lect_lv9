@@ -12,22 +12,22 @@ public class PlayerController {
 
 	public static PlayerController instance = new PlayerController();
 
-	private Player p1 = new Player("tester"); // 플레이어'들'이 있을 수 있지만, 여기선 1명(배열X)
+	public Player p1 = new Player("tester"); // 플레이어'들'이 있을 수 있지만, 여기선 1명(배열X)
 	String logPlayer; // 로그정보
 
 	public PlayerController() {
 		this.logPlayer = p1.getPlayerName(); // 플레이어 한명 가정
 
 		// 디버깅용 디폴트 아이템 3개 셋팅
-		this.setInventory( ShopController.instance.getFreeItem() );
-		this.setInventory( ShopController.instance.getFreeItem() );
-		this.setInventory( ShopController.instance.getFreeItem() );
+//		this.setInventory( ShopController.instance.getFreeItem() );
+//		this.setInventory( ShopController.instance.getFreeItem() );
+//		this.setInventory( ShopController.instance.getFreeItem() );
 	}
 	public void InventoryMenu() {
 		while(true) {
 			System.out.println("========== 인벤토리 메뉴 ==========");
 			System.out.println("플레이어가 가진 돈: " + this.getPlayer().getMoney() + "원");
-			System.out.print("[1. 아이템 조회][2. 아이템 착용][3. 아이템 해제]\n[4. 아이템 판매][5. 뒤로가기] : ");	
+			System.out.print("[1. 아이템 조회][2. 아이템 착용][3. 아이템 해제]\n[4. 아이템 판매][0. 뒤로가기] : ");	
 			int sel = selectInt(Main.sc.next());
 			if(sel == 1) {
 				printAllInventory(p1);
@@ -41,7 +41,7 @@ public class PlayerController {
 			else if(sel == 4) {
 				sellItem(p1);
 			}
-			else if(sel == 5) {
+			else if(sel == 0) {
 				break;
 			}
 		}
@@ -66,7 +66,7 @@ public class PlayerController {
 	public void giveItem(Player player) {
 		if(!player.getInventory().isEmpty()) {
 			System.out.println("===== 아이템 착용 =====");
-			System.out.println("[1) 길드][2) 파티] : ");
+			System.out.print("[1) 길드][2) 파티] : ");
 			int sel = selectInt(Main.sc.next());
 			if(sel == 1) {
 				if(GuildController.instance.sizeOfGuild() != 0) {

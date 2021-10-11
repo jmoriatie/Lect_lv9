@@ -17,11 +17,11 @@ public class GuildController {
 	private GuildController() {
 		guild = new ArrayList<Unit>();
 		party = new ArrayList<Unit>();
-		tempAddUnit();
-		tempAddUnit();
-		tempAddUnit();
-		tempAddUnit();
-		tempAddUnit();
+//		tempAddUnit();
+//		tempAddUnit();
+//		tempAddUnit();
+//		tempAddUnit();
+//		tempAddUnit();
 	}
 	// 디버깅용 길드원 추가
 	public void tempAddUnit() {
@@ -53,7 +53,7 @@ public class GuildController {
 		while(true) {
 			System.out.println("========================= 유닛 관리 =========================");
 			System.out.println("플레이어가 가진 돈: " + PlayerController.instance.getPlayer().getMoney() + "원");
-			System.out.print("[1.길드원 조회][2.길드원 영입][3.길드원 추방]\n[4.파티원 조회][5.파티원 추가][6.파티원 제외][7. 파티원 교체][8.뒤로가기] : ");
+			System.out.print("[1.길드원 조회][2.길드원 영입][3.길드원 추방]\n[4.파티원 조회][5.파티원 추가][6.파티원 제외][7. 파티원 교체][0.뒤로가기] : ");
 			int sel = selectInt( Main.sc.next() ); 
 			if(sel == 1) {
 				printAllGuild();
@@ -76,7 +76,7 @@ public class GuildController {
 			else if(sel == 7) {
 				updatePartyUnit();;
 			}
-			else if(sel == 7) {
+			else if(sel == 0) {
 				break;
 			}
 		}
@@ -123,11 +123,19 @@ public class GuildController {
 		
 		// 무기
 		if(u.getWeapon() == null) System.out.printf("[str: %d]", u.getStr());
-		else System.out.printf("[[str: %d + %d]", u.getStr(), u.getWeapon().getPower() );
+		else System.out.printf("[str: %d + %d]", u.getStr(), u.getWeapon().getPower() );
 		
 		 // 방어구
 		if(u.getArmor() == null) System.out.printf("[def: %d]\n", u.getDef());
 		else System.out.printf("[def: %d + %d]\n", u.getDef(), u.getArmor().getPower() );
+		
+		if(u.getAccessory() != null || u.getWeapon() != null || u.getArmor() != null) {
+			System.out.print("ㄴ[착용]");
+			if(u.getAccessory() != null) System.out.printf("[%s: hp+%d]", u.getAccessory().getName(), u.getAccessory().getPower());
+			if(u.getWeapon() != null) System.out.printf("[%s: str+%d]", u.getWeapon().getName(), u.getWeapon().getPower());
+			if(u.getArmor() != null) System.out.printf("[%s: def+%d]", u.getArmor().getName(), u.getArmor().getPower());
+			System.out.print("\n");			
+		}
 	}
 	
 	// print all guild
@@ -165,6 +173,25 @@ public class GuildController {
 		}
 	}
 		
+	// ================== 불러오기 사용 ============================
+	// 길드, 파티 초기화
+	public void initUnitArr() {
+		if(!this.guild.isEmpty()) {
+			this.guild = new ArrayList<Unit>();
+		}
+		if(!this.party.isEmpty()) {
+			this.party = new ArrayList<Unit>();
+		}
+	}
+	// 길원 셋팅
+	public void setGuildUnit(Unit unit) {
+		this.guild.add(unit);
+	}
+	// 파티원 셋팅
+	public void setPartyUnit(Unit unit) {
+		this.party.add(unit);
+	}
+	// ================== 길드 관련 ============================
 	// 길드원 모집=
 	public void addGuildUnit() {
 		if(PlayerController.instance.getPlayer().checkMoneyPossible(1000)) {

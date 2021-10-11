@@ -32,6 +32,18 @@ public class Unit {
 		this.accessory = null;
 	}
 
+	
+	public Unit(String name, int level, boolean isParty, int str, int def, int hp) {
+		this.name = name;
+		this.level = level;
+		this.isParty = isParty;
+		this.str = str;
+		this.def = def;
+		this.hp = hp;
+	}
+
+
+
 	public String getName() {
 		return name;
 	}

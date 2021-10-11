@@ -97,7 +97,7 @@ public class ShopController {
 		while(true) {
 			System.out.println("========================= 상점 =========================");
 			System.out.println("플레이어가 가진 돈: " + PlayerController.instance.getPlayer().getMoney() + "원");
-			System.out.print("[1.아이템 목록][2. 아이템 조회]\n[3.아이템 구입][4.뒤로가기] : ");
+			System.out.print("[1.아이템 목록][2. 아이템 조회]\n[3.아이템 구입][0.뒤로가기] : ");
 			int sel = selectInt( Main.sc.next() ); 
 			if(sel == 1) {
 				printAllItem();
@@ -108,7 +108,7 @@ public class ShopController {
 			else if(sel == 3) {
 				buyItem();
 			}
-			else if(sel == 4) {
+			else if(sel == 0) {
 				break;
 			}
 		}

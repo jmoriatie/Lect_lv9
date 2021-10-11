@@ -1,5 +1,6 @@
 package main;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 import player.PlayerController;
@@ -17,7 +18,7 @@ public class Main {
 	public static void mainGame() {
 		while(true) {
 			System.out.println("========== RPG GAME ==========");
-			System.out.print("[1. 유닛관리][2. 상점][3. 인벤토리][4. 저장][5. 불러오기][6. 종료] : ");
+			System.out.print("[1. 유닛관리][2. 상점][3. 인벤토리][4. 저장][5. 불러오기][0. 종료] : ");
 			String input = sc.next();
 			int select = -1;
 			try {
@@ -39,9 +40,15 @@ public class Main {
 				fc.save();
 			}
 			else if(select == 5) { // 불러오기
-				fc.load();
+				try {
+					fc.load();
+					System.out.println("[불러오기 완료]");
+				} catch (IOException e) {
+					System.out.println("[불러오기 실패]");
+					e.printStackTrace();
+				}
 			}
-			else if(select == 6) { // 종료
+			else if(select == 0) { // 종료
 				System.out.println("[게임 종료]");
 				break;
 			}
