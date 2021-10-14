@@ -4,6 +4,7 @@ import unit.Unit;
 
 // 쉴드 가짐 
 // 필살기 가짐, 데미지x2
+// ㄴ 기본 공격도 %화
 
 public class Boss extends Zombie{
 
