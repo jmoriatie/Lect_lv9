@@ -1,13 +1,12 @@
 package hero;
 
-import unit.Cureble;
 import unit.Unit;
 
 // 보스처럼 공격, 확률적으로 크리티컬 구현해보기
 // 물약 있음
 //ㄴ 기본 공격도 %화
 
-public abstract class Hero extends Unit implements Cureble{
+public class Hero extends Unit{
 	
 	// 추상클래스 싱글톤 안되나?
 	public int potion = 5; // 물약
@@ -16,23 +15,29 @@ public abstract class Hero extends Unit implements Cureble{
 		super(who, maxHp, damage, stand);
 	}
 	
-	
 	@Override
 	public void attack(Unit unit) {
-		double ranPer = r.nextDouble(); // 0.0 ~ 0.9
-		int damage = (int)(this.getDamage() * ranPer);
-		System.out.printf("[히어로가 %2d의 데미지로 공격했다]\n", damage);
-		unit.substractHp(damage); // 용사
-		System.out.println(unit.getHp());
+		int ranNum = r.nextInt(3)+1; // 3분의 1확률 1나오면 크리티컬 데미지
+		int damage;
+		if(ranNum == 1) {
+			damage = (int)(this.getDamage() * 1.5);
+			System.out.printf("[영웅의 크리티컬 데미지!! %2d*1.5]\n", damage);
+		}
+		else {
+			double ranPer = r.nextDouble(); // 0.0 ~ 0.9
+			damage = (int)(this.getDamage() * ranPer);
+			System.out.printf("[영웅이 %2d의 데미지로 공격했다]\n", damage);
+		}
+		unit.substractHp(damage); // 적군
 	}
 
 	@Override
 	public void substractHp(int damage) {
 		this.setHp(this.getHp() - damage);
-		System.out.printf("좀비: 아야![hp %d/%d]\n", this.getHp(), this.getMaxHp());
+		System.out.printf("영웅: 아야![hp %d/%d]\n", this.getHp(), this.getMaxHp());
+		System.out.println();
 	}
 	
-	@Override	// 인터페이스 오버라이드
 	public boolean cure() {
 		boolean check = true;
 		if(getHp() == getMaxHp()) {
@@ -41,8 +46,9 @@ public abstract class Hero extends Unit implements Cureble{
 		}		
 		else if (this.potion != 0) {
 			this.potion--;
-			this.setHp(this.getHp() + this.potion);
-			System.out.printf("[포션을 마셨다 hp+100]\n[남은 포션: %d개][%d/%d]\n", this.potion, getHp(), getMaxHp());
+			if(this.getHp() + 100 > this.getMaxHp()) this.setHp(this.getMaxHp());
+			else this.setHp(this.getHp() + 100);
+			System.out.printf("[포션을 마셨다 hp+100][남은 포션: %d개][%d/%d]\n", this.potion, getHp(), getMaxHp());
 		} else {
 			check = false;
 			System.out.println("[포션이 없습니다]");

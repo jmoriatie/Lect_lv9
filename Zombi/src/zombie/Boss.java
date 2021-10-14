@@ -1,5 +1,7 @@
 package zombie;
 
+import java.util.Random;
+
 import unit.Unit;
 
 // 쉴드 가짐 
@@ -8,25 +10,44 @@ import unit.Unit;
 
 public class Boss extends Zombie{
 
-	int shield;
+	private int shield;
+	private int maxShield;
+
 	
 	public Boss(int who, int maxHp, int damage, int stand) {
 		super(who, maxHp, damage, stand);
 		this.shield = 100;
+		this.maxShield = shield;
 	}
 	
 	// UpStream 필요할 듯
 	public void attack(Unit unit) {
-		double ranPer = r.nextDouble(); // 0.0 ~ 0.9
-		int damage = (int)(this.getDamage() * ranPer);
-		System.out.printf("[보스가 %2d의 데미지로 공격했다]\n", damage);
-		unit.substractHp(damage); // 용사
-		System.out.println(unit.getHp());		
+		int ranNum = r.nextInt(3)+1; // 3분의 1확률 1나오면 크리티컬 데미지
+		int damage;
+
+		if(ranNum == 1) {
+			damage = (int)(this.getDamage() * 1.5);
+			System.out.printf("[보스의 크리티컬 데미지!! %2d*1.5]\n", damage);
+		}
+		else {
+			double ranPer = r.nextDouble(); // 0.0 ~ 0.9
+			damage = (int)(this.getDamage() * ranPer);
+			System.out.printf("[보스가 %2d의 데미지로 공격했다]\n", damage);
+		}
+		
+		unit.substractHp(damage);
 	}
 
 	public void substractHp(int damage) {
+		if(shield > 0) { // 쉴드가 0이상일 때
+			this.shield = this.shield - damage; // 쉴드를 깎아주고 
+			damage = damage - this.shield; // 데미지도 쉴드의 양만큼 깎아줌
+			if(damage <= 0) damage = 0;  // 데미지가 쉴드보다 작으면, 데미지는 0 처리
+			else this.shield = 0; // 데미지가 쉴드보다 크면 쉴드는 0 처리
+		}
 		this.setHp(this.getHp() - damage);
-		System.out.printf("보스: 으억![hp %d/%d]\n", this.getHp(), this.getMaxHp());		
+		System.out.printf("보스: 으억![shield %d/%d][hp %d/%d]\n",this.shield ,maxShield, this.getHp(), this.getMaxHp());
+		System.out.println();
 	}
 
 

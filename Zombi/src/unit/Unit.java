@@ -40,7 +40,6 @@ abstract public class Unit {
 	
 	abstract public void attack(Unit unit); // 데려다가 때리고
 	abstract public void substractHp(int damage); // hp조정
-//	abstract public void plusHp(int damage);
 	
 	public int getDamage() {
 		return damage;
