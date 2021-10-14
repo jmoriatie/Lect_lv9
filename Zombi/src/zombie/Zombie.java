@@ -4,10 +4,17 @@ import unit.Unit;
 
 public class Zombie extends Unit {
 
-	public Zombie(int who, int maxHp, int damage, int stand) {
+	private static Zombie instance;
+	
+	private Zombie(int who, int maxHp, int damage, int stand) {
 		super(who, maxHp, damage, stand);
 	}
 
+	public static Zombie getInstance(int who, int maxHp, int damage, int stand) {
+		instance = new Zombie(who, maxHp, damage, stand);
+		return instance;
+	}
+	
 	@Override
 	public void attack(Unit unit) {
 		double ranPer = r.nextDouble(); // 0.0 ~ 0.9

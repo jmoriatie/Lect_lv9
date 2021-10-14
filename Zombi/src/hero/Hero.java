@@ -8,11 +8,18 @@ import unit.Unit;
 
 public class Hero extends Unit{
 	
-	// 추상클래스 싱글톤 안되나?
+	private static Hero instance; // 인스턴스
+	
 	public int potion = 5; // 물약
 	
-	public Hero(int who, int maxHp, int damage, int stand) {
+	private Hero(int who, int maxHp, int damage, int stand) {
 		super(who, maxHp, damage, stand);
+	}
+	
+	// 싱글톤 인스턴스
+	public static Hero getInstance(int who, int maxHp, int damage, int stand) {
+		instance = new Hero(who, maxHp, damage, stand);
+		return instance;
 	}
 	
 	@Override

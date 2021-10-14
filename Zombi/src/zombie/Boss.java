@@ -10,14 +10,20 @@ import unit.Unit;
 
 public class Boss extends Zombie{
 
+	private static Boss instance;
+	
 	private int shield;
 	private int maxShield;
 
-	
-	public Boss(int who, int maxHp, int damage, int stand) {
-		super(who, maxHp, damage, stand);
+	private Boss(int who, int maxHp, int damage, int stand) {
+		super(who, maxHp, damage, stand); // 좀비 싱글톤이 하면 안되나?
 		this.shield = 100;
 		this.maxShield = shield;
+	}
+	
+	public static Boss getInstance(int who, int maxHp, int damage, int stand) {
+		instance = new Boss(who, maxHp, damage, stand);
+		return instance;
 	}
 	
 	// UpStream 필요할 듯
