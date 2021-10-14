@@ -4,27 +4,23 @@ import unit.Unit;
 
 public class Zombie extends Unit {
 
-	public Zombie(int who, int hp, int damage, int stand) {
-		super(who, hp, damage, stand);
-		// TODO Auto-generated constructor stub
+	public Zombie(int who, int maxHp, int damage, int stand) {
+		super(who, maxHp, damage, stand);
 	}
 
 	@Override
 	public void attack(Unit unit) {
-		// TODO Auto-generated method stub
-		
+		double ranPer = r.nextDouble(); // 0.0 ~ 0.9
+		int damage = (int)(this.getDamage() * ranPer);
+		System.out.printf("[좀비가 %2d의 데미지로 공격했다]\n", damage);
+		unit.substractHp(damage); // 용사
+		System.out.println(unit.getHp());
 	}
 
 	@Override
 	public void substractHp(int damage) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void plusHp(int damage) {
-		// TODO Auto-generated method stub
-		
+		this.setHp(this.getHp() - damage);
+		System.out.printf("좀비: 꾸엑![hp %d/%d]\n", this.getHp(), this.getMaxHp());
 	}
 
 }

@@ -17,9 +17,10 @@ abstract public class Unit {
 	// ㄴ Random과 관련하여 파생된 자식들은 여기로 Upstream되어서, 컨트롤 됨
 	// ㄴ 따라서, 랜덤을 여기서 사용하는 것으로 볼 수 있음
 	
-	public Unit(int who, int hp, int damage, int stand) {
+	public Unit(int who, int maxHp, int damage, int stand) {
 		this.who = who;
-		this.hp = hp;
+		this.maxHp = maxHp;
+		this.hp = maxHp;
 		this.damage = damage;
 		this.stand = stand;
 		this.r = new Random();
@@ -29,9 +30,9 @@ abstract public class Unit {
 		return hp;
 	}
 
-//	public void setHp(int hp) {
-//		this.hp = hp;
-//	}
+	public void setHp(int hp) {
+		this.hp = hp;
+	}
 
 	public int getWho() {
 		return who;
@@ -39,7 +40,7 @@ abstract public class Unit {
 	
 	abstract public void attack(Unit unit); // 데려다가 때리고
 	abstract public void substractHp(int damage); // hp조정
-	abstract public void plusHp(int damage);
+//	abstract public void plusHp(int damage);
 	
 	public int getDamage() {
 		return damage;
