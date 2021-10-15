@@ -111,7 +111,7 @@ public class Controller {
 //			this.end(); // 이동>10, 플레이어 hp<0
 			
 		} else if (sel == 2) { // 포션 마시기
-			hero.cure();
+			hero.cure(hero);
 		}
 		System.out.flush();
 	}
@@ -156,7 +156,7 @@ public class Controller {
 					}
 				}
 				else if (choi == 2) { // 포션 마시기
-					hero.cure();
+					hero.cure(hero);
 				}
 			}
 		}

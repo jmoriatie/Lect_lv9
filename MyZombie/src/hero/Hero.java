@@ -49,15 +49,16 @@ public class Hero extends Unit implements CriticalHit, Cureble{
 
 	// cure interface
 	@Override
-	public void cure() {
-		if(getHp() == getMaxHp()) {
+	public void cure(Cureble cureUnit) { // 마크인터페이스 붙은 애들만 힐링가능
+		Hero hero = (Hero)cureUnit; // 현재는 단일 히어로 => potion 개수도 받기 위해 Hero로 캐스팅
+		if(hero.getHp() == hero.getMaxHp()) {
 			System.out.println("[체력이 가득차있습니다]");
 		}		
-		else if (this.potion != 0) {
-			this.potion--;
-			if(this.getHp() + 100 > this.getMaxHp()) this.setHp(this.getMaxHp());
-			else this.setHp(this.getHp() + 100);
-			System.out.printf("[포션을 마셨다 hp+100][남은 포션: %d개][%d/%d]\n", this.potion, getHp(), getMaxHp());
+		else if (hero.potion != 0) {
+			hero.potion--;
+			if(hero.getHp() + 100 > hero.getMaxHp()) hero.setHp(hero.getMaxHp());
+			else hero.setHp(hero.getHp() + 100);
+			System.out.printf("[포션을 마셨다 hp+100][남은 포션: %d개][%d/%d]\n", hero.potion, hero.getHp(), hero.getMaxHp());
 		} else {
 			System.out.println("[포션이 없습니다]");
 		}
