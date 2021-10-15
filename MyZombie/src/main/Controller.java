@@ -1,5 +1,7 @@
 package main;
 
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 import hero.Hero;
@@ -22,11 +24,11 @@ public class Controller {
 	final int BOSS = 3;
 	
 	Hero hero;
-	Zombie zombie;
 	Boss boss;
-
+	ArrayList<Zombie> zombies;
+	
 	int field[];
-
+	
 	// Controller instance => singleton
 	private static Controller instance = new Controller();
 
@@ -36,13 +38,28 @@ public class Controller {
 	public static Controller getInstance() {
 		return instance;
 	}
+
+	
 	
 	public void playGame() {
-		field = new int[10];
+		Random r = new Random();
+		zombies = new ArrayList<Zombie>();
+
+		field = new int[25];
+		
 //		Unit(int who, int hp, int damage, int stand)
 		setUnitOnField(Hero.getInstance(HERO, 300, 50, 0), field);
-		setUnitOnField(new Zombie(ZOMBIE, 100, 30, 5), field);
-		setUnitOnField(Boss.getInstance(BOSS, 300, 40, 9), field);
+
+		// 좀비넣기
+		for(int i=0; i<3; i++) {
+			int rIdx = r.nextInt(field.length-2)+1; // 1부터 필드길이-2 개씩
+			if(field[rIdx] == FIELD) {
+				Zombie zombie = new Zombie(ZOMBIE, 100, 30, rIdx);
+				setUnitOnField(zombie, field);
+			} else i--; // 원하는 좀비 숫자 무조건 나오게
+		}
+		
+		setUnitOnField(Boss.getInstance(BOSS, 300, 40, field.length-1), field);
 
 		while (end()) {
 			view(field);
@@ -51,22 +68,21 @@ public class Controller {
 	}
 
 	// 유닛 셋팅
-	// ㄴ 위치가 1일 때 -1해서 0인덱스 컨트롤
 	// ㄴ 위치와 뷰의 동기화
 	private void setUnitOnField(Unit unit, int field[]) {
-		field[unit.getStand()] = unit.getWho();
-		if (unit.getWho() == HERO)
+		field[unit.getStand()] = unit.getWho(); // 필드 셋팅
+		if (unit.getWho() == HERO) // 변수, 리스트 셋팅
 			hero = (Hero) unit;
 		if (unit.getWho() == ZOMBIE)
-			zombie = (Zombie) unit;
+			zombies.add((Zombie) unit);
 		if (unit.getWho() == BOSS)
 			boss = (Boss) unit;
 	}
 
 	// 뷰
 	private void view(int field[]) {
-		System.out.println("======================");
-		for (int i = 0; i < 10; i++) {
+		System.out.println();
+		for (int i = 0; i < field.length; i++) {
 			if (field[i] == HERO)
 				System.out.print("옷(H)");
 			else if (field[i] == ZOMBIE)
@@ -74,10 +90,10 @@ public class Controller {
 			else if (field[i] == BOSS)
 				System.out.print("(B)옷");
 			else if (field[i] == FIELD)
-				System.out.print("_");
+				System.out.print(" ");
 		}
 		System.out.println(">>[Game Clear]");
-		System.out.println("======================");
+		System.out.println("■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■");
 	}
 
 	// 이동
@@ -97,16 +113,24 @@ public class Controller {
 		} else if (sel == 2) { // 포션 마시기
 			hero.cure();
 		}
+		System.out.flush();
 	}
 
 	// 싸우기
 	private void fight(int field[]) {
 		// 싸우고 나면, 히어로로 그대로, 아니면 게임오버
-		// 합칠 수 있는 방법을 찾아보기
-		if (hero.getStand() == zombie.getStand() || hero.getStand() == boss.getStand()) {
+		
+		// 좀비 식별 => 같으면 넣어줘
+		Zombie zombie = null;
+		for(Zombie z : zombies) {
+			if(hero.getStand() == z.getStand()) {
+				zombie = z;
+			}
+		}
+		if (zombie != null || hero.getStand() == boss.getStand()) {
 			// 적 UpCasting
 			Unit enamy = null;
-			if (hero.getStand() == zombie.getStand()) {
+			if (zombie != null) {
 				enamy = (Unit) zombie;
 				System.out.println("[좀비를 만났다! 전투 시작]");
 			}
