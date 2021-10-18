@@ -92,8 +92,6 @@ public class Controller {
 			field[hero.getStand()] = HERO;
 
 			this.fight(field); // 싸우는지
-//			this.end(); // 이동>10, 플레이어 hp<0
-			
 		} else if (sel == 2) { // 포션 마시기
 			hero.cure();
 		}
@@ -102,7 +100,6 @@ public class Controller {
 	// 싸우기
 	private void fight(int field[]) {
 		// 싸우고 나면, 히어로로 그대로, 아니면 게임오버
-		// 합칠 수 있는 방법을 찾아보기
 		if (hero.getStand() == zombie.getStand() || hero.getStand() == boss.getStand()) {
 			// 적 UpCasting
 			Unit enamy = null;
