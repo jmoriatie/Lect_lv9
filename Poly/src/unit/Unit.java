@@ -5,11 +5,13 @@ import java.util.Scanner;
 
 public class Unit {
 		
-	protected int hp;
-	protected int maxHp;
-	protected int power;
-	protected String name;
-	protected String state = "노멀";
+	private Random rn = new Random();
+	
+	public int hp;
+	public int maxHp;
+	public int power;
+	public String name;
+	public String state = "노멀";
 	
 	public Unit(){};
 	
@@ -28,22 +30,25 @@ public class Unit {
 	};
 	
 	
-	protected void attack(Unit target) {
-		target.hp -= power;
-		System.out.printf("[%s]이[%s]에게 \'[%d]\'의 데미지를 입혔습니다.\n", name, target.name, power);
+	public void attack(Unit target) {
+		int damage = (int)( power * rn.nextDouble() );
+		target.hp -= damage;
+		System.out.printf("[%s]이(가)[%s]에게 \'[%d]\'의 데미지를 입혔습니다.\n", name, target.name, damage);
 
 		checkTargetHp(target);
 	}
 	
-	protected void printUnit() {
+	public void printUnit() {
 		System.out.printf("[%s][%d/%d][%d]\n", name, hp, maxHp, power);
 	}
 	
-	//  Manager에서 유닛 없애기도 만들어야함
-	protected void checkTargetHp(Unit target) {
+	public void checkTargetHp(Unit target) {
 		if(target.hp <= 0) {
-			System.out.printf("[%s]를 처치했습니다!", target.name);
 			target.hp = 0;
 		}
+	}
+	
+	public void skill(Unit unit) {
+		
 	}
 }

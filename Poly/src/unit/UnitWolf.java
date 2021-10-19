@@ -7,18 +7,20 @@ public class UnitWolf extends Unit implements Monster{
 	}
 	
 	@Override
-	protected void attack(Unit target) {
+	public void attack(Unit target) {
 		super.attack(target);
 	}
 	
 	@Override
-	protected void printUnit() {
+	public void printUnit() {
 		super.printUnit();
 	}
 	
+	@Override
 	public void skill(Unit unit) {
+		super.skill(unit);
 		unit.hp -= this.power * 2;
-		System.out.printf("[%s]치명스킬, [%d] %d(%d*2)의 데미지를 입음\n", 
+		System.out.printf("[%s]치명스킬, [%s] %d(%d*2)의 데미지를 입음\n", 
 				this.name, unit.name, (this.power*2), this.power);
 		checkTargetHp(unit);
 	}

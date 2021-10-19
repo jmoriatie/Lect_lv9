@@ -11,7 +11,7 @@ public class Player extends Unit{
 	public int stun; // 활동불가 (0:활동가능)
 	public int stopSkill; // 스킬사용불가(0:스킬사용가능)
 	public String job;
-	private int skillCnt;
+	public int skillCnt;
 	
 	public Player(String name , int maxHp , int power, String job) {
 		super(name, maxHp, power);
@@ -28,7 +28,7 @@ public class Player extends Unit{
 	}
 	
 	@Override
-	protected void attack(Unit target) {
+	public void attack(Unit target) {
 		super.attack(target);
 	}
 	
@@ -42,16 +42,16 @@ public class Player extends Unit{
 	}
 	
 	// 전사스킬 => 최대체력 증가, 공격력 증가, 체력 전체 채우기
-	protected void warriarSkill() {
+	public void warriarSkill() {
 		if(this.job.equals("전사")) {
 			if(skillCnt != 0) {
 				if (stopSkill == 0) {
 					this.maxHp += 50;
 					this.power += 50;
 					this.hp = this.maxHp;
-					System.out.println("[전사스킬 사용!]");
-					System.out.printf("[%s 최대체력 +50, 공격력 +50, 체력 가득참][%d/%d]\n", this.name, this.hp, this.maxHp);
 					skillCnt--;
+					System.out.printf("[전사스킬 사용!][잔여스킬: %d회]\n", this.skillCnt);
+					System.out.printf("[%s 최대체력 +50, 공격력 +50, 체력 가득참][%d/%d]\n", this.name, this.hp, this.maxHp);
 				}
 				else {
 					stopSkill--;
@@ -63,17 +63,17 @@ public class Player extends Unit{
 	}
 	
 	// 마법사 스킬 => 크리티컬
-	protected void wizardSkill(Unit target) {
+	public void wizardSkill(Unit target) {
 		if(this.job.equals("마법사")) {
 			if(skillCnt != 0) {
 				if (stopSkill == 0) {
 					int criticalHit = (int)(this.power * 2);
 					target.hp -= criticalHit;
-					System.out.println("[마법사 스킬 사용!]");
+					skillCnt--;
+					System.out.printf("[마법사스킬 사용!][잔여스킬: %d회]\n", this.skillCnt);
 					System.out.printf("[크리티컬 히트 [%s]에게 %d(%d*2)의 데미지를 입혔습니다]\n", target.name, criticalHit, this.power);
 					
 					checkTargetHp(target);
-					skillCnt--;
 				}
 				else {
 					stopSkill--;
@@ -84,17 +84,19 @@ public class Player extends Unit{
 	}
 	
 	// 성직자 스킬 => 파티원 전체 힐
-	protected void pristSkill(ArrayList<Unit> party) {
+	public void pristSkill() {
+		// 파티 가져오기
+		ArrayList<Player> party = UnitManager.getInstance().party; 
 		if (this.job.equals("성직자")) {
 			if (skillCnt != 0) {
 				if (stopSkill == 0) {
-					System.out.println("[성직자 스킬 사용!]");
+					skillCnt--;
+					System.out.printf("[성직자스킬 사용!][잔여스킬: %d회]\n", this.skillCnt);
 					System.out.printf("[파티원 전체 최대체력 회복]\n");
 					for (Unit unit : party) {
 						unit.hp = unit.maxHp;
 						System.out.printf(" ㄴ [%s][%d/%d]\n", unit.name, unit.hp, unit.maxHp);
 					}
-					skillCnt--;
 				} else {
 					stopSkill--;
 					System.out.printf("[스킬사용불가 상태이상, 턴을 넘어갑니다][%d턴 남음]\n", stopSkill);
@@ -106,7 +108,7 @@ public class Player extends Unit{
 	
 	
 	@Override
-	protected void printUnit() {
+	public void printUnit() {
 		super.printUnit();
 	}
 	

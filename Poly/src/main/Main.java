@@ -1,11 +1,13 @@
 package main;
 
-import unit.UnitManager;
-
 public class Main {
 	public static void main(String[] args) {
-		UnitManager i = UnitManager.getInstance();
-//		i.tempCheck();
 
+		GameManager g = GameManager.getInstance();
+		
+		while(true) {
+			if(!g.stageChange()) break;
+		}
+		System.out.println("[시스템 종료]");
 	}
 }
