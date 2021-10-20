@@ -75,8 +75,6 @@ public class StageBattle extends Stage{
 		}
 	}
 	
-
-	
 	private void playerTurn() {
 		for(int i=0; i<um.getPartySize(); i++) {
 			Player player = um.getPlayer(i);
