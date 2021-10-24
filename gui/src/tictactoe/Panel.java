@@ -7,14 +7,16 @@ import java.awt.event.ActionListener;
 import java.util.Scanner;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class Panel extends JPanel implements ActionListener{
 	
-	JButton start = new JButton();
-	JButton[] bts = new JButton[9]; 
-	JTextField finish = new JTextField();
+	public JButton start = new JButton();
+	public JButton[] bts = new JButton[9]; 
+	public JLabel finish = new JLabel();
+
 	
 	private final int SIZE = 50;
 	
@@ -55,23 +57,17 @@ public class Panel extends JPanel implements ActionListener{
 		}
 		add( new HeadTitle() );
 		
-		finish.setBounds(Frame.W-430 + x, Frame.H-240 + y, 200, 150);
+		finish.setBounds(Frame.W-430 + x, Frame.H-240 + y, 200, 100);
 		finish.setBackground(Color.gray);
 		finish.setFont(new Font("", Font.BOLD, 15));
 		finish.setForeground(Color.white);
-		finish.setHorizontalAlignment(JTextField.CENTER);
+		finish.setHorizontalAlignment(JLabel.CENTER);
 		add(finish);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JButton tmp = (JButton)e.getSource();
-		// 스타트 == 초기화
-		if(tmp == start) {
-			init();
-			start.setText("RESTART");
-			finish.setText("");
-		}
 		
 		// 게임 진행
 		if(run) {
@@ -93,6 +89,12 @@ public class Panel extends JPanel implements ActionListener{
 			}
 		}
 		
+		// 스타트 == 초기화
+		if(tmp == start) {
+			init();
+			start.setText("RESTART");
+			finish.setText("");
+		}
 		
 	}
 	
