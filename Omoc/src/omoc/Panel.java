@@ -23,6 +23,7 @@ public class Panel extends JPanel implements ActionListener{
 	
 	public JButton start;
 	public JButton[][] bts;
+	public JLabel turnLabel;
 	public JLabel printWin;
 
 	public Panel() {
@@ -37,6 +38,7 @@ public class Panel extends JPanel implements ActionListener{
 		start = new JButton();
 		bts = new JButton[SIZE][SIZE];
 		printWin = new JLabel(); 
+		turnLabel = new JLabel();
 		init();
 	}
 	
@@ -71,9 +73,12 @@ public class Panel extends JPanel implements ActionListener{
 		start.setBackground(Color.GRAY);
 		start.addActionListener(this);
 		add(start);
+		
+		// 부수적인 것들
 		add( new Title() );
 		setLabel();
 		add(printWin);
+		add(turnLabel);
 	}
 		
 	@Override
@@ -114,13 +119,15 @@ public class Panel extends JPanel implements ActionListener{
 				this.start.setText("RESTART");
 				System.out.println("게임 클리어");
 			}
+			
+			// 턴 표시
+			con.printTurn(turnLabel, this.turn);
 		}
 		else {
 			for(int i=0; i<SIZE; i++) {
 				for(int j=0; j<SIZE; j++) {
 					if(bts[i][j] == temp) {
 						con.printRestart(printWin);
-//						this.printWin.setText("RESTART");
 					}
 				}
 			}
@@ -142,5 +149,12 @@ public class Panel extends JPanel implements ActionListener{
 		printWin.setFont( new Font("", Font.BOLD, 15) );
 		printWin.setForeground(Color.black);
 		printWin.setVisible(true);
+		
+		turnLabel.setBounds(50 ,370 ,250 ,20);
+		turnLabel.setFont( new Font("", Font.BOLD, 15) );
+		turnLabel.setForeground(Color.PINK);
+		turnLabel.setVisible(play);
+		// 최초 셋팅
+		con.printTurn(turnLabel, this.turn);
 	}
 }

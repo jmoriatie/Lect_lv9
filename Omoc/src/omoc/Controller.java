@@ -139,7 +139,12 @@ public class Controller{
 		printWinLabel.setText("플레이어"+ checkWinner+ " 승리");
 	}
 	
+	
 	public void printRestart(JLabel printWinLabel) {
 		printWinLabel.setText("RESTART 버튼을 클릭하세요");
+	}
+	
+	public void printTurn(JLabel turnLabel, int turn) {
+		turnLabel.setText("Player"+turn+" turn >>");
 	}
 }
