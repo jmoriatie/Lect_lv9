@@ -156,5 +156,6 @@ public class Panel extends JPanel implements ActionListener{
 		turnLabel.setVisible(play);
 		// 최초 셋팅
 		con.printTurn(turnLabel, this.turn);
+		con.printStart(printWin);
 	}
 }
