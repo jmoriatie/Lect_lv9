@@ -20,13 +20,17 @@ public class Panel extends JPanel implements ActionListener{
 	static boolean play = false;
 	public static final int SIZE = 10;
 	
+	static int p1Score;
+	static int p2Score;
+	
 	static int turn = 1;
 	
 	static JButton start;
 	static JButton[][] bts;
 	static JLabel turnLabel;
 	static JLabel printWin;
-
+	static JLabel score;
+	
 	Timer timer;
 	
 	public Panel() {
@@ -43,6 +47,7 @@ public class Panel extends JPanel implements ActionListener{
 		printWin = new JLabel(); 
 		turnLabel = new JLabel();
 		timer = new Timer();
+		score = new Score();
 		
 		init();
 	}
@@ -85,6 +90,10 @@ public class Panel extends JPanel implements ActionListener{
 		add(timer); // 마지막에 붙여 넣는다
 		add(turnLabel);
 		add(printWin);
+		add(score);
+		
+		p1Score = 0;
+		p2Score = 0;
 	}
 		
 	@Override
@@ -106,10 +115,12 @@ public class Panel extends JPanel implements ActionListener{
 					if(bts[i][j] == temp && bts[i][j].getBackground() == Color.DARK_GRAY) {
 						if(this.turn == 1) {
 							bts[i][j].setBackground(Color.red);
+							p1Score += 10;
 							this.turn = 2;
 						}
 						else if(this.turn == 2) {
 							bts[i][j].setBackground(Color.blue);
+							p2Score += 10;
 							this.turn = 1;
 						}
 						timer.sec = 5;
@@ -121,6 +132,7 @@ public class Panel extends JPanel implements ActionListener{
 			// ㄴ end() 는 int winner를 반환
 			// ㄴ printWinner는 라벨을 받아서 출력해줌
 			// ㄴ fieldInit으로 필드 초기화
+			score.setText(String.format("[p1: %2d점 // p2: %2d점]", p1Score, p2Score));
 			int checkWinner = con.end(bts, turn);
 			if(checkWinner != -1) {
 				con.printWinner(printWin, checkWinner);
@@ -128,7 +140,7 @@ public class Panel extends JPanel implements ActionListener{
 				this.start.setText("RESTART");
 				System.out.println("게임 클리어");
 			}
-//			
+		
 			// 턴 표시
 			con.printTurn(turnLabel, turn);
 		}
@@ -155,6 +167,9 @@ public class Panel extends JPanel implements ActionListener{
 	// 필드만 재시작해주는 메서드
 	public void fieldInit() {
 		this.turn = 1;
+		p1Score = 0;
+		p2Score = 0;
+		score.setText(String.format("[p1: 0점 // p2: 0점]"));
 		for(int i=0; i<SIZE; i++) {
 			for(int j=0; j<SIZE; j++) {
 				bts[i][j].setBackground(Color.DARK_GRAY);

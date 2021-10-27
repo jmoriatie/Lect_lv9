@@ -148,6 +148,10 @@ public class Controller{
 	}
 	
 	public void printTurn(JLabel turnLabel, int turn) {
+		if(Panel.turn == 1) {
+			turnLabel.setText("Player"+Panel.turn+" turn >>");
+			turnLabel.setBackground(Color.blue);
+		}
 		turnLabel.setText("Player"+Panel.turn+" turn >>");
 	}
 	

@@ -28,7 +28,7 @@ public class Frame extends JFrame{
 		// 타이틀 더해주고
 		// 리셋, 가이드
 		Panel Panel = new Panel();
-		add(Panel  );
+		add(Panel);
 		
 		Thread t = new Thread(Panel.timer);
 		t.start();

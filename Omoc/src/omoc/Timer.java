@@ -51,17 +51,20 @@ public class Timer extends JLabel implements Runnable {
 			int rIdx2 = r.nextInt(10);
 			if(Panel.turn == 1 && Panel.bts[rIdx1][rIdx2].getBackground() == Color.DARK_GRAY) {
 				Panel.bts[rIdx1][rIdx2].setBackground(Color.red);
+				Panel.p1Score += 10;
 				Panel.turn = 2;
 				break;
 				
 			}
 			else if(Panel.turn == 2 && Panel.bts[rIdx1][rIdx2].getBackground() == Color.DARK_GRAY) {
 				Panel.bts[rIdx1][rIdx2].setBackground(Color.blue);
+				Panel.p2Score += 10;
 				Panel.turn = 1;
 				break;
 			}
 		}
 		Panel.con.printTurn(Panel.turnLabel, Panel.turn);
+		Panel.score.setText(String.format("[p1: %2d점 // p2: %2d점]", Panel.p1Score, Panel.p2Score));
 		int checkWinner = Panel.con.end(Panel.bts, Panel.turn);
 		if(checkWinner != -1) {
 			Panel.con.printWinner(Panel.printWin, checkWinner);
