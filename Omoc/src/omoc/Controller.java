@@ -7,7 +7,6 @@ import javax.swing.JLabel;
 
 public class Controller{
 	
-	
 	public int end(JButton[][] buttons, int turn){
 		int check = -1;
 		int winner = turn == 1? 2:1;
@@ -149,7 +148,7 @@ public class Controller{
 	}
 	
 	public void printTurn(JLabel turnLabel, int turn) {
-		turnLabel.setText("Player"+turn+" turn >>");
+		turnLabel.setText("Player"+Panel.turn+" turn >>");
 	}
 	
 }

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -11,21 +12,23 @@ import javax.swing.JPanel;
 
 public class Panel extends JPanel implements ActionListener{
 
-	Controller con;
+	static Controller con;
 
 	// 2차원 배열의 버튼 형식의 오목
 	// 10*10
 	
-	boolean play = false;
+	static boolean play = false;
 	public static final int SIZE = 10;
 	
-	public int turn = 1;
+	static int turn = 1;
 	
-	public JButton start;
-	public JButton[][] bts;
-	public JLabel turnLabel;
-	public JLabel printWin;
+	static JButton start;
+	static JButton[][] bts;
+	static JLabel turnLabel;
+	static JLabel printWin;
 
+	Timer timer;
+	
 	public Panel() {
 		// 프레임 셋팅 
 		con = new Controller();
@@ -33,12 +36,14 @@ public class Panel extends JPanel implements ActionListener{
 		setBounds(0, 0, 800 , 530);
 		setBackground(Color.white);
 		setVisible(true);
-
+		
 		// 올릴 것들 셋팅
 		start = new JButton();
 		bts = new JButton[SIZE][SIZE];
 		printWin = new JLabel(); 
 		turnLabel = new JLabel();
+		timer = new Timer();
+		
 		init();
 	}
 	
@@ -62,7 +67,7 @@ public class Panel extends JPanel implements ActionListener{
 			}
 			x=0;
 			y+=51;
-			this.play = true;
+			this.play = false;
 		}
 		
 		// 스타트 버튼
@@ -72,22 +77,25 @@ public class Panel extends JPanel implements ActionListener{
 		start.setForeground(Color.black);
 		start.setBackground(Color.GRAY);
 		start.addActionListener(this);
-		add(start);
+		setLabel();
 		
+		add(start);
 		// 부수적인 것들
 		add( new Title() );
-		setLabel();
-		add(printWin);
+		add(timer); // 마지막에 붙여 넣는다
 		add(turnLabel);
+		add(printWin);
 	}
 		
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JButton temp = (JButton)e.getSource();
+				
 		if(start == temp) {
 			fieldInit();
 			this.play = true;
 			printWin.setText("");
+			timer.sec = 5;
 		}
 		
 		if(this.play) {
@@ -104,6 +112,7 @@ public class Panel extends JPanel implements ActionListener{
 							bts[i][j].setBackground(Color.blue);
 							this.turn = 1;
 						}
+						timer.sec = 5;
 					}
 				}
 			}
@@ -119,9 +128,18 @@ public class Panel extends JPanel implements ActionListener{
 				this.start.setText("RESTART");
 				System.out.println("게임 클리어");
 			}
-			
+//			
 			// 턴 표시
-			con.printTurn(turnLabel, this.turn);
+			con.printTurn(turnLabel, turn);
+		}
+		else if(!this.play && this.start.getText().equals("START")) {
+			for(int i=0; i<SIZE; i++) {
+				for(int j=0; j<SIZE; j++) {
+					if(bts[i][j] == temp) {
+						con.printStart(printWin);
+					}
+				}
+			}
 		}
 		else {
 			for(int i=0; i<SIZE; i++) {
@@ -153,9 +171,13 @@ public class Panel extends JPanel implements ActionListener{
 		turnLabel.setBounds(50 ,370 ,250 ,20);
 		turnLabel.setFont( new Font("", Font.BOLD, 15) );
 		turnLabel.setForeground(Color.PINK);
-		turnLabel.setVisible(play);
+		turnLabel.setVisible(true);
 		// 최초 셋팅
 		con.printTurn(turnLabel, this.turn);
 		con.printStart(printWin);
+	}
+	
+	public static JButton[][] getButtons(){
+		return bts;
 	}
 }
