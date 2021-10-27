@@ -138,7 +138,6 @@ public class Controller{
 		printWinLabel.setText("[플레이어"+ checkWinner+ " 승리]");
 	}
 	
-	
 	public void printRestart(JLabel printWinLabel) {
 		printWinLabel.setText("[RESTART 버튼을 클릭하세요]");
 	}
@@ -148,10 +147,9 @@ public class Controller{
 	}
 	
 	public void printTurn(JLabel turnLabel, int turn) {
-		if(Panel.turn == 1) {
-			turnLabel.setText("Player"+Panel.turn+" turn >>");
-			turnLabel.setBackground(Color.blue);
-		}
+		// 턴별 색상변경
+		if(Panel.turn == 1) turnLabel.setForeground(Color.red);
+		else turnLabel.setForeground(Color.blue);
 		turnLabel.setText("Player"+Panel.turn+" turn >>");
 	}
 	
