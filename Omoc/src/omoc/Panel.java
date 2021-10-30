@@ -10,6 +10,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import omoc_Controller.Controller;
+
 public class Panel extends JPanel implements ActionListener{
 
 	static Controller con;

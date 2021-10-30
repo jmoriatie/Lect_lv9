@@ -2,6 +2,7 @@ package omoc;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Toolkit;
 
 import javax.swing.JButton;
@@ -32,5 +33,10 @@ public class Frame extends JFrame{
 		
 		Thread t = new Thread(Panel.timer);
 		t.start();
+	}
+	
+	protected void paintComponent(Graphics g) {
+		// 네모그리기
+		g.drawRect(100, 100, 100, 100);
 	}
 }
