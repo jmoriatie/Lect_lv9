@@ -26,6 +26,7 @@ public class Board extends JPanel implements ActionListener, MouseListener{
 	JButton right;
 	
 	Circle circle;
+	Circle circleTwo;
 	String cliking;
 		
 	Board(){
@@ -76,36 +77,75 @@ public class Board extends JPanel implements ActionListener, MouseListener{
 	private void setCircle() {
 		// 동그라미로 연습
 		circle = new Circle(10,10,100,100);
+		circleTwo = new Circle(10+120,10,100,100);
 	}
 	
 	@Override
 	protected void paintComponent(Graphics g) {
+		Graphics t = g;
+		
 		super.paintComponent(g);
+		super.paintComponent(t);
 
 		// 느리게 
-		try {
-			Thread.sleep(30);
-		} catch (Exception e) {
-		}
+//		try {
+//			Thread.sleep(30);
+//		} catch (Exception e) {
+//		}
 		
 		if(cliking.equals("up")) {
 			circle.y--;
+			if(circle.y == (circleTwo.y + circleTwo.height) && 
+					circle.x <= (circleTwo.x + circleTwo.width) &&
+					(circle.x+circle.width) >= circleTwo.x) {
+				circleTwo.y--;
+			}
 		}
 		else if(cliking.equals("left")) {
 			circle.x--;
+			if(circle.x == (circleTwo.x + circleTwo.width) && 
+					circle.y <= (circleTwo.y + circleTwo.height) &&
+					(circle.y + circle.height) >= circleTwo.y) {
+				circleTwo.x--;
+			}
 		}
 		else if(cliking.equals("down")) {
 			circle.y++;
+			if((circle.y + circle.height) == circleTwo.y &&
+					circle.x <= (circleTwo.x + circleTwo.width) &&
+					(circle.x+circle.width) >= circleTwo.x) {
+				circleTwo.y++;
+			}
 		}
 		else if(cliking.equals("right")) {
 			circle.x++;
+			
+			if((circle.x+circle.width) == circleTwo.x && 
+					circle.y <= (circleTwo.y + circleTwo.height) &&
+					(circle.y + circle.height) >= circleTwo.y) {
+				circleTwo.x++;
+			}
 		}
 		
-		// 동그라미로 그리기
-		g.setColor(Color.BLACK); // 컬러를 먼저주면, 색 두개를 다르게 할 수도 있네
-		g.drawRoundRect(circle.x, circle.y ,circle.width, circle.height, circle.width, circle.height);
+		// 동그라미로 그리기 (공 움직이는 예외에 어긋남..)
+//		g.setColor(Color.BLACK); // 컬러를 먼저주면, 색 두개를 다르게 할 수도 있네
+//		g.drawRoundRect(circle.x, circle.y ,circle.width, circle.height, circle.width, circle.height);
+//		g.setColor(Color.PINK);
+//		g.fillRoundRect(circle.x, circle.y ,circle.width, circle.height, circle.width, circle.height);
+//
+//		t.setColor(Color.BLACK); 
+//		t.drawRoundRect(circleTwo.x, circleTwo.y ,circleTwo.width, circleTwo.height, circleTwo.width, circleTwo.height);
+//		t.setColor(Color.DARK_GRAY);
+//		t.fillRoundRect(circleTwo.x, circleTwo.y ,circleTwo.width, circleTwo.height, circleTwo.width, circleTwo.height);
+		
 		g.setColor(Color.PINK);
-		g.fillRoundRect(circle.x, circle.y ,circle.width, circle.height, circle.width, circle.height);
+		g.drawRect(circle.x, circle.y ,circle.width, circle.height);
+		g.fillRect(circle.x, circle.y ,circle.width, circle.height);
+		
+		t.setColor(Color.DARK_GRAY);
+		t.drawRect(circleTwo.x, circleTwo.y ,circleTwo.width, circleTwo.height);
+		t.fillRect(circleTwo.x, circleTwo.y ,circleTwo.width, circleTwo.height);
+		
 		repaint();
 	}
 	
