@@ -40,8 +40,8 @@ public class Board extends JPanel implements ActionListener, MouseListener, KeyL
 		setArrowKeys();
 		// 동그라미 베이스
 		setCircle();
-		addMouseListener(this);
-		addKeyListener(this);
+//		addMouseListener(this); // 이거는 전체에다가 리스너를 다는 것
+//		addKeyListener(this); // 따라서, 특정키에만 적용할 때는, 이거 빼도 됨(키리스너도 동일)
 		setVisible(true);
 	}
 
@@ -183,6 +183,11 @@ public class Board extends JPanel implements ActionListener, MouseListener, KeyL
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+//		if(e.getSource() instanceof JButton) {
+//			// 받아온 소스가 JButton의 인스턴스일 경우만 적용
+			// ㄴ 예외처리용
+//		}
+		
 		JButton target = (JButton) e.getSource();
 		System.out.println("클-");
 		setMove(target); // 받은 버튼을 보내줌
