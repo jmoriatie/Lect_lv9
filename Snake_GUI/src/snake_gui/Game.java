@@ -4,10 +4,12 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import util.MyUtil;
 
@@ -30,19 +32,22 @@ class SnakePanel extends MyUtil{
 	
 	private int size;
 	private Rect[] snake;
+
+	private String move; // 초기화 고민
 	
 	private int itemCnt;
 	private boolean play;
 	
+
 	private JButton up;
 	private JButton down;
 	private JButton left;
 	private JButton right;
 	private JButton reset;
+	private JLabel printM;
 	
 	private String arrs[] = {"↑","↓","←","→"}; // 상하좌우
 	
-	private String move; // 초기화 고민
 	
 	public SnakePanel() {
 		setLayout(null);
@@ -71,7 +76,6 @@ class SnakePanel extends MyUtil{
 				if( (head.getY() + 50)  <= 50+(50*9) ) { // 이격사이즈 + 맵Y 크기
 					moveTail(head);
 					head.setY(head.getY() + 50);
-					
 				}
 			}
 			else if(dir == LEFT) {
@@ -88,9 +92,11 @@ class SnakePanel extends MyUtil{
 					head.setX(head.getX() + 50); // 머리이동			
 				}
 			}
-			
+			System.out.println();
+			this.printM.setText(String.format("아이템 개수: %d개", this.itemCnt));
 			end(head);
 		} else {
+			this.printM.setText("RESET 클릭");
 			System.out.println("리셋버튼 클릭 필요");
 		}
 	}
@@ -109,7 +115,11 @@ class SnakePanel extends MyUtil{
 		// 아이템 먹었을 때
 		for(int i=0; i<map.length; i++) {
 			for(int j=0; j<map[i].length; j++) {
-				if(map[i][j].getX() == head.getX() && map[i][j].getY() == head.getY() && map[i][j].getC() == Color.red) {
+				if(map[i][j].getX() == head.getX() && map[i][j].getY() == head.getY() && map[i][j].getC() == Color.red) {					
+					System.out.println("들: " + this.itemCnt);
+					this.itemCnt--;
+					System.out.println("나: " + this.itemCnt);
+
 					this.size++;
 					Rect temp[] = snake;
 					snake = new Rect[this.size];
@@ -125,30 +135,61 @@ class SnakePanel extends MyUtil{
 		}
 	}
 	
-	// 죽음 
+	
+	// 게임 종료
 	private void end(Rect head){
 		for(int i=1; i<this.size; i++) {
 			if(head.getX() == snake[i].getX() && head.getY() == snake[i].getY()) {
-				System.out.println("종료");
+				System.out.println("OVER");
+				this.printM.setText("GAME OVER");
 				this.play = false;
+				break;
 			}
+		}
+		
+		if(this.itemCnt == 0) {
+			System.out.println("CLEAR");
+			this.printM.setText("GAME CLEAR");
+			this.play = false;
 		}
 	}
 	
 	private void setGame() {
-		
-		Random rn = new Random();
-
 		this.play = true;
-		// 리셋버튼 ////////
+		setMessage(); // 라벨
+		setMap(); // 맵
+		setSnake(); // 뱀
+		setItem(); // 아이템
+		setReset(); // 리셋버튼
+		setButton(); // 버튼
+		add(up);
+		add(down);
+		add(left);
+		add(right);
+		add(printM); // 라벨
+		add(reset);
+	}
+	
+	private void setMessage() {
+		this.printM = new JLabel();
+		this.printM.setBounds(1000 - 220, 250, 150, 50);
+		this.printM.setHorizontalAlignment(JLabel.CENTER);
+		this.printM.setFont(new Font("", Font.ROMAN_BASELINE, 15));
+		this.printM.setText(String.format("아이템 개수: %d개", this.itemCnt));
+	}
+	
+	private void setReset() {
 		this.reset = new JButton();
-		this.reset.setBounds(1000 - 150, 650 - 250,100, 50);
+		this.reset.setBounds(1000 - 180, 650 - 250,100, 50);
 		this.reset.setFont( new Font("", Font.BOLD, 15) );
 		this.reset.setBackground(Color.gray);
-		this.reset.setText(arrs[0]);
+		this.reset.setText("RESET");
+		this.reset.setHorizontalAlignment(JButton.CENTER);
 		this.reset.addMouseListener(this);
-		
-		// 맵
+		this.reset.addKeyListener(this);
+	}
+	
+	private void setMap() {
 		map = new Rect[10][10];
 		
 		int x = 50;
@@ -162,21 +203,38 @@ class SnakePanel extends MyUtil{
 			x = 50;
 			y += 50;
 		}
-		
-		// 아이템
+	}
+	
+	private void setItem() {
+		Random rn = new Random();
+
 		itemCnt = 4;
 		for(int i=0; i<this.itemCnt; i++) {
+			boolean check = true;
 			int rNumY = rn.nextInt(this.map.length);
 			int rNumX = rn.nextInt(this.map[0].length);
 			// 중복처리
-			if(map[rNumY][rNumX].getC() != Color.red) {
+			
+			for(int j=0; j<this.size; j++) {
+				if(map[rNumY][rNumX].getX() == snake[j].getX() &&
+						map[rNumY][rNumX].getY() == snake[j].getY()) {
+					check = false;	
+				}
+			}
+			
+			if(map[rNumY][rNumX].getC() == Color.red) {
+				check = false;
+			}
+			
+			if(check) {
 				map[rNumY][rNumX].setC(Color.red);
 			}
 			else i--;
 		}
-		
-		// 뱀
-		// ㄴ 머리 색 다르게
+		this.printM.setText(String.format("아이템 개수: %d개", this.itemCnt));
+	}
+	
+	private void setSnake() {
 		this.size = 5;
 		snake = new Rect[this.size];
 		// 
@@ -189,8 +247,9 @@ class SnakePanel extends MyUtil{
 			ss--;
 		}
 		snake[0].setC(Color.blue);
-		
-		// 버튼
+	}
+	
+	private void setButton() {
 		// 위
 		this.up = new JButton();
 		this.up.setBounds(1000 - 150, 650 - 150, 50, 50);
@@ -219,15 +278,10 @@ class SnakePanel extends MyUtil{
 		this.right.setBackground(Color.gray);
 		this.right.setText(arrs[3]);
 		this.right.addKeyListener(this);
-		
-		add(up);
-		add(down);
-		add(left);
-		add(right);
 	}
-		
+	
 	@Override
-	protected void paintComponent(Graphics g) {
+	protected void paintComponent(Graphics g) {		
 		super.paintComponent(g);
 		
 		// 느리게 이동
@@ -258,19 +312,43 @@ class SnakePanel extends MyUtil{
 			g.fillRect(temp.getX(), temp.getY(), temp.getWidth(), temp.getHeight());
 			g.drawRect(temp.getX(), temp.getY(), temp.getWidth(), temp.getHeight());
 		}
-		
 		repaint();
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+		System.out.println("눌렀-");
+	
 		int dir = e.getKeyCode();
+
 		moveSnake(dir);
+		System.out.println("itemCnt : " + this.itemCnt);
+		
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {
+	public void keyReleased(KeyEvent e) {		
+		System.out.println("-뗏");
 		this.move = "";
+	}
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		System.out.println("클릭");
+		JButton b = (JButton)e.getSource();
+		if(reset == b) {
+			this.printM.setText("");
+			setMap(); // 맵
+			setItem(); // 아이템
+			setSnake(); // 뱀
+			this.play = true;
+		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		System.out.println("ddd");
+
 	}
 }
 
