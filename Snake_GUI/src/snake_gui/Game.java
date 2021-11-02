@@ -32,8 +32,6 @@ class SnakePanel extends MyUtil{
 	
 	private int size;
 	private Rect[] snake;
-
-	private String move; // 초기화 고민
 	
 	private int itemCnt;
 	private boolean play;
@@ -45,6 +43,8 @@ class SnakePanel extends MyUtil{
 	private JButton right;
 	private JButton reset;
 	private JLabel printM;
+	
+	private Rect warn;
 	
 	private String arrs[] = {"↑","↓","←","→"}; // 상하좌우
 	
@@ -65,28 +65,24 @@ class SnakePanel extends MyUtil{
 			Rect head = snake[0];
 			
 			if(dir == UP) {
-				this.move = "up";
 				if( (snake[0].getY() - 50)  >= 50 ) { // 이격사이즈
 					moveTail(head);
 					head.setY(head.getY() - 50);			
 				}
 			}
 			else if(dir == DOWN) {
-				this.move = "down";
 				if( (head.getY() + 50)  <= 50+(50*9) ) { // 이격사이즈 + 맵Y 크기
 					moveTail(head);
 					head.setY(head.getY() + 50);
 				}
 			}
 			else if(dir == LEFT) {
-				this.move = "left";
 				if( (head.getX() - 50)  >= 50 ) { 
 					moveTail(head);
 					head.setX(head.getX() - 50); // 머리이동			
 				}
 			}
 			else if(dir == RIGHT) {
-				this.move = "rigth";
 				if( (head.getX() + 50) <= 50+(50*9) ) { 
 					moveTail(head);
 					head.setX(head.getX() + 50); // 머리이동			
@@ -135,7 +131,6 @@ class SnakePanel extends MyUtil{
 		}
 	}
 	
-	
 	// 게임 종료
 	private void end(Rect head){
 		for(int i=1; i<this.size; i++) {
@@ -156,6 +151,7 @@ class SnakePanel extends MyUtil{
 	
 	private void setGame() {
 		this.play = true;
+		setWarn();
 		setMessage(); // 라벨
 		setMap(); // 맵
 		setSnake(); // 뱀
@@ -168,6 +164,10 @@ class SnakePanel extends MyUtil{
 		add(right);
 		add(printM); // 라벨
 		add(reset);
+	}
+	
+	private void setWarn() {
+		this.warn = new Rect(1000 - 250, 100, 50, 50);
 	}
 	
 	private void setMessage() {
@@ -312,6 +312,16 @@ class SnakePanel extends MyUtil{
 			g.fillRect(temp.getX(), temp.getY(), temp.getWidth(), temp.getHeight());
 			g.drawRect(temp.getX(), temp.getY(), temp.getWidth(), temp.getHeight());
 		}
+		
+		g.drawRect(warn.getX(), warn.getY(), warn.getWidth(), warn.getHeight());
+		if(this.itemCnt != 0) {
+			g.setColor(Color.blue);
+			g.fillRect(warn.getX(), warn.getY(), warn.getWidth(), warn.getHeight());
+		}
+		else {
+			g.setColor(Color.red);
+			g.fillRect(warn.getX(), warn.getY(), warn.getWidth(), warn.getHeight());
+		}
 		repaint();
 	}
 
@@ -329,7 +339,6 @@ class SnakePanel extends MyUtil{
 	@Override
 	public void keyReleased(KeyEvent e) {		
 		System.out.println("-뗏");
-		this.move = "";
 	}
 	
 	@Override
