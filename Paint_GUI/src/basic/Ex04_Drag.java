@@ -6,16 +6,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
 class P extends MyUtil{
 	
+	private Random rn = new Random();
+	
 	private ArrayList<Rect> rs;
 	private Rect r;
-	private int sX;
-	private int sY;
+	private int sX, sY;
 	
 	private JButton closeButton;
 	
@@ -24,12 +26,13 @@ class P extends MyUtil{
 	public P() {
 		this.r = new Rect();
 		rs = new ArrayList<Rect>();
+		r.setColor( new Color(rn.nextInt(255),rn.nextInt(255),rn.nextInt(255)) );
 		rs.add(r);
 		
 		setLayout(null);
 		setBounds(0, 0, 1000, 700);
 		
-		
+		setFocusable(true); // requestFocusInWindow() 메서드를 위한 추가
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		addKeyListener(this);
@@ -52,17 +55,17 @@ class P extends MyUtil{
 	@Override
 	public void mousePressed(MouseEvent e) {
 		this.r = new Rect();
+		// 랜덤 색칠
+		r.setColor( new Color(rn.nextInt(255),rn.nextInt(255),rn.nextInt(255)) );
 		rs.add(r);
 		
+		// 누른장소
 		this.sX = e.getX();
 		this.sY = e.getY();
 		
 		// 시작
 		r.setX(sX);
-		r.setY(sY);
-
-//		System.out.print(r.getX() + " : ");
-//		System.out.println(r.getY());		
+		r.setY(sY);	
 	}
 
 	@Override
@@ -72,24 +75,102 @@ class P extends MyUtil{
 		int defX = 0;
 		int defY = 0;
 
-		if(!this.shift) { // 일반
-			defX = x - sX;
-			defY = y - sY;
-		}
-		else { // 쉬프트 클릭시
-			if(x > y) { // x가 더 크면 x따라서
+		// 시작점 보다, 변경점이 크면(사각형 오른쪽 그리기)
+		if(this.sX < x) {
+			if(!this.shift) { // 일반
 				defX = x - sX;
-				defY = defX;
+				
+				if(this.sY > y) { // 오위
+					defY = sY - y;
+					r.setY(y);
+				}
+				else if(this.sY < y) { // 오아
+					defY = y - sY;
+				}	
+				
 			}
-			else { // 반대
+			else { // 쉬프트 클릭시
+				r.setX(sX);
+				r.setY(sY);
+				// y
+				// y-height
+				defX = x - sX;
 				defY = y - sY;
-				defX = defY;
-			}
-		}
 
-		// 끝지점
-		r.setWidth(defX);
-		r.setHeight(defY);
+				if(this.sY >= y) { // 쉬프트 + 오위
+					if(defX >= -defY) { // 차이가 더 큰쪽 따라가기
+						defY = -defX; // X의 차이(defX)가 더 크면 Y초기화
+						y = sY - defX; // 타점 sY와의 차이만큼 조정
+					}
+					else { 
+						defX = -defY;
+					}
+					r.setY(y);
+					defY = -defY;
+				}
+				else if(this.sY < y) { // 쉬프트 + 오아
+					if(defX >= defY) { // x가 더 크면 x따라서
+						defY = defX;
+						y = sY + defX; 
+					}
+					else { // 반대
+						defX = defY;
+					}
+				}	
+			}
+			// 끝지점
+			r.setWidth(defX);
+			r.setHeight(defY);
+		} 
+		// 사각형 왼쪽 그리기
+		else {
+			if(!this.shift) { // 일반
+				if(this.sY >= y) { // 왼위
+					defX = sX - x;
+					defY = sY - y;	
+				}
+				else if(this.sY < y) { // 왼아
+					defX = sX - x;
+					defY = y - sY;
+					y = sY;
+				}	
+			}
+			else { // 쉬프트 클릭시
+				defX = sX - x; // 커짐
+				if(this.sY >= y) { // 쉬왼위 - 많이가면, 더작음
+					defY = sY - y; // 커짐
+					if(defX > defY) { // x가 더 작으면 x따라
+						defY = defX;
+						y = sY - defX;
+					}
+					else { // 반대		
+						defX = defY;
+						x = sX - defY;
+					}
+				}
+				else if(this.sY < y) { // 쉬왼아
+					defY = sY - y; // 작아짐(마이너스)
+					if(defX > -defY) { // x가 큰경우
+						defY = defX;
+						y = sY;
+					}
+					else { // y가 큰경우		
+						defX = defY;
+						x = sX + defY;
+						y = sY;
+						defX = -defX; // 크기는 +조정
+						defY = -defY; // (defY는 원래 -)
+					}
+				}
+			}
+			
+			r.setX(x);
+			r.setY(y);
+			
+			// 끝지점
+			r.setWidth(defX);
+			r.setHeight(defY);
+		}								
 	}
 	
 	@Override
@@ -97,10 +178,14 @@ class P extends MyUtil{
 		super.paintComponent(g);
 		
 		for(int i=0; i<rs.size(); i++) {
-			g.setColor(Color.blue);
 			Rect temp = rs.get(i);
+			g.setColor(temp.getColor());
 			g.drawRect(temp.getX(), temp.getY(), temp.getWidth(), temp.getHeight());
+			g.fillRect(temp.getX(), temp.getY(), temp.getWidth(), temp.getHeight());
 		}
+		
+		// 끊김방지?
+		requestFocusInWindow();
 		
 		repaint();
 	}
@@ -134,6 +219,7 @@ class F extends JFrame{
 	private P p = new P();
 	
 	private F() {
+		super("PAINT");
 		setLayout(null);
 		setBounds(100, 100, 1000, 700);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);

@@ -1,16 +1,20 @@
 package basic;
 
+import java.awt.Color;
+
 public class Rect {
 	private int x,y,width,height;
+	private Color color;
 
 	public Rect() {	}
 	
-	public Rect(int x, int y, int width, int height) {
+	public Rect(int x, int y, int width, int height, Color color) {
 		super();
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		this.color = color;
 	}
 
 	public int getX() {
@@ -43,6 +47,14 @@ public class Rect {
 
 	public void setHeight(int height) {
 		this.height = height;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
 	}
 	
 	
