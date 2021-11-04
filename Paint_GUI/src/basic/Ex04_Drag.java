@@ -20,6 +20,7 @@ class P extends MyUtil{
 	private int sX, sY;
 	
 	private JButton closeButton;
+	private JButton reset;
 	
 	private boolean shift;
 	
@@ -38,11 +39,21 @@ class P extends MyUtil{
 		addKeyListener(this);
 		
 		setCloseButton();
+		setResetButton();
 		add(closeButton);
+		add(reset);
 		
 		setVisible(true);
 	}
 
+	private void setResetButton() {
+		reset = new JButton();
+		reset.setBounds(1000-200, 700-160, 100, 50);
+		reset.setText("RESET");
+		reset.addKeyListener(this);
+		reset.addActionListener(this);
+	}
+	
 	private void setCloseButton() {
 		closeButton = new JButton();
 		closeButton.setBounds(1000-200, 700-100, 100, 50);
@@ -77,6 +88,8 @@ class P extends MyUtil{
 
 		// 시작점 보다, 변경점이 크면(사각형 오른쪽 그리기)
 		if(this.sX < x) {
+			r.setX(sX);
+			r.setY(sY);
 			if(!this.shift) { // 일반
 				defX = x - sX;
 				
@@ -90,8 +103,6 @@ class P extends MyUtil{
 				
 			}
 			else { // 쉬프트 클릭시
-				r.setX(sX);
-				r.setY(sY);
 				// y
 				// y-height
 				defX = x - sX;
@@ -187,6 +198,15 @@ class P extends MyUtil{
 		// 끊김방지?
 		requestFocusInWindow();
 		
+		// 삼각형 그리기
+		// drawPolygon(int[], int[], int[]);
+		// (x좌표의 배열, y좌표의 배열, 꼭지점 개수)
+//		int[] xxx = {100,50,150}; // 좌측부터 위꼭지, 좌, 우
+//		int[] yyy = {100,200,200}; // 좌측부터 위, 좌, 우
+//		g.setColor(Color.red);
+//		g.drawPolygon(xxx, yyy, 3);
+		
+		
 		repaint();
 	}
 	
@@ -209,6 +229,10 @@ class P extends MyUtil{
 		if(e.getSource() == this.closeButton) {
 			System.out.println("close");
 			F.getInstance().end();;
+		}
+		if(e.getSource() == this.reset) {
+			System.out.println("reset");
+			this.rs.clear();
 		}
 	}
 }
