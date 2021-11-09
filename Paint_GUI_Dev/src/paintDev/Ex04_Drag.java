@@ -54,9 +54,9 @@ class P extends MyUtil{
 		rs = new ArrayList<Rect>();
 		ps = new ArrayList<Poly>();
 		ls = new ArrayList<Line>();
-		cs = new ArrayList<JLabel>();
 		rrs = new ArrayList<Round>();
 		
+		cs = new ArrayList<JLabel>();
 		setLayout(null);
 		setBounds(0, 0, 1000, 700);
 		
@@ -423,8 +423,11 @@ class P extends MyUtil{
 			this.rs.clear();
 			this.ps.clear();
 			this.ls.clear();
+			this.rrs.clear();
+			
 			this.draw = "rect";
-			this.color = 0;
+			this.cs.clear();
+			setColorButtons();
 		}
 		
 		String temp = this.draw;
