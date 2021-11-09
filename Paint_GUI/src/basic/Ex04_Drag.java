@@ -195,7 +195,7 @@ class P extends MyUtil{
 			g.fillRect(temp.getX(), temp.getY(), temp.getWidth(), temp.getHeight());
 		}
 		
-		// 끊김방지?
+		// keyListener에 대한 포커스 재요청
 		requestFocusInWindow();
 		
 		// 삼각형 그리기
