@@ -24,6 +24,8 @@ class Ex05Panel extends MyUtil{
 	private Image im = new ImageIcon("images/사진.png").getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
 	private JLabel image2 = new JLabel(new ImageIcon(im));
 
+	// 1) 라벨에 이미지 아이콘 담아서 올리기
+	// 2) 이미지 아이콘 생성 후, 그대로 paintComponent에 올리기 : g.drawImage(해당 이미지, x, y, 디폴트크기 설정) 
 	
 	// 크기가 어떻게 움직이는지를 봐야해
 	public Ex05Panel() {
@@ -44,11 +46,6 @@ class Ex05Panel extends MyUtil{
 //		image.setBounds(0, 0, 500, 500);
 //		image.setVisible(true);
 //		add(image , 0); // <- 우선순우 변경, 가장 앞으로와 동일
-		
-//		*사용 방법
-//		drawPolyLine(int[], int[], int)
-//		: x 좌표 배열, y좌표 배열, 점 개수
-
 		
 		// 인덱스 0, 1 중에 0으로 변경
 		
