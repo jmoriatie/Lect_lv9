@@ -2,9 +2,11 @@ package main;
 
 import javax.swing.JFrame;
 
-public class Race extends JFrame {
+public class Race extends JFrame{
 
 	private static Race instance = new Race();
+	
+
 	
 	private Race() {
 		super("RACE");
@@ -25,5 +27,7 @@ public class Race extends JFrame {
 		System.out.println("종료");
 		this.dispose();	
 	}
+
+	
 	
 }
