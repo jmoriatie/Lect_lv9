@@ -129,7 +129,7 @@ public class Field extends MyUtil implements Runnable{
 		for(int i=0; i<PLAYERCNT; i++) {
 			Horse hh = hs.get(i);
 			Image iic = is.get(i);
-			g.drawImage(iic, hh.getX() ,hh.getY(),null);
+			g.drawImage(iic, hh.getX() ,hh.getY(), null);
 			
 			try {
 				Thread.sleep(2);
